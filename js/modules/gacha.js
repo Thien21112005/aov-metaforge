@@ -225,8 +225,14 @@ class GachaManager {
           if (isLegendary) {
             slotEl.classList.add("legendary-glow");
             if (typeof sounds !== "undefined") sounds.playLegendaryFanfare();
+            if (window.gsap) {
+              window.gsap.fromTo(slotEl, { scale: 1.05, filter: "brightness(1.3)" }, { scale: 1, filter: "brightness(1)", duration: 0.5, ease: "elastic.out(1, 0.4)" });
+            }
           } else {
             if (typeof sounds !== "undefined") sounds.playCardStop();
+            if (window.gsap) {
+              window.gsap.fromTo(slotEl, { y: -4 }, { y: 0, duration: 0.22, ease: "back.out(2)" });
+            }
           }
         }
 

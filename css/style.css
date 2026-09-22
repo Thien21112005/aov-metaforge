@@ -92,6 +92,15 @@ body {
   display: none;
 }
 
+.ambient-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* ================= CONTAINER ================= */
 .app-wrapper {
   max-width: 1400px;
@@ -571,8 +580,20 @@ body {
   padding: 10px 34px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.24);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.28);
+  animation: rollGlowPulse 2.8s infinite ease-in-out;
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes rollGlowPulse {
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.28);
+  }
+  50% {
+    box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5), 0 0 14px rgba(52, 211, 153, 0.35);
+  }
 }
 
 .btn-big-roll:hover:not(:disabled) {
@@ -584,6 +605,7 @@ body {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
+  animation: none;
 }
 
 /* Result Winning Announcement */
@@ -672,12 +694,85 @@ body {
   box-shadow: var(--shadow-card);
   overflow: hidden;
   position: relative;
-  transition: all 0.3s ease;
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.reel-slot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08), 0 0 14px rgba(37, 99, 235, 0.12);
+}
+
+.reel-slot::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(25deg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.reel-slot:hover::after {
+  opacity: 1;
+  animation: sheenSweep 0.8s ease forwards;
+}
+
+@keyframes sheenSweep {
+  0% { left: -60%; }
+  100% { left: 140%; }
 }
 
 .reel-slot.legendary-glow {
   border-color: var(--gold-primary);
-  box-shadow: 0 0 20px rgba(217, 119, 6, 0.28);
+  box-shadow: 0 0 24px rgba(217, 119, 6, 0.35);
+  animation: legendaryPulse 1.8s infinite alternate ease-in-out;
+}
+
+@keyframes legendaryPulse {
+  0% { box-shadow: 0 0 14px rgba(217, 119, 6, 0.25); }
+  100% { box-shadow: 0 0 28px rgba(217, 119, 6, 0.55), 0 0 8px rgba(254, 240, 138, 0.4); }
+}
+
+.slot-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--blue-primary) 50%, transparent 100%);
+  opacity: 0.5;
+  animation: indicatorPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes indicatorPulse {
+  0%, 100% { opacity: 0.3; transform: scaleX(0.7); }
+  50% { opacity: 0.9; transform: scaleX(1); }
+}
+
+/* Button ripple */
+.btn-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(0);
+  animation: rippleAnim 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleAnim {
+  to {
+    transform: scale(3.5);
+    opacity: 0;
+  }
 }
 
 .slot-header {

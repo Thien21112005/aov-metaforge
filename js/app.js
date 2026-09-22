@@ -49,6 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 5. Global Hero Detail Modal
   initHeroDetailModal();
+
+  // 6. Ambient Kinetic Particles Canvas & Visual FX
+  initAmbientParticles();
+
+  // 7. Interactive Specular Button Ripples
+  initButtonEffects();
 });
 
 function initHeroCatalog() {
@@ -183,4 +189,98 @@ function showHeroDetail(hero) {
   `;
 
   modal.classList.add("open");
+}
+
+/**
+ * Ambient Kinetic Particles Engine
+ * GPU-accelerated lightweight particles drifting gently behind the cards
+ */
+function initAmbientParticles() {
+  const canvas = document.getElementById("ambient-particles-canvas");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  let width = (canvas.width = window.innerWidth);
+  let height = (canvas.height = window.innerHeight);
+
+  window.addEventListener("resize", () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  const colors = [
+    "rgba(37, 99, 235, 0.45)",  // Cobalt blue
+    "rgba(217, 119, 6, 0.45)",  // Warm gold
+    "rgba(16, 185, 129, 0.45)", // Emerald green
+    "rgba(99, 102, 241, 0.35)", // Violet indigo
+    "rgba(6, 182, 212, 0.4)"    // Cyan
+  ];
+
+  const particles = Array.from({ length: 32 }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    radius: Math.random() * 2.8 + 1.2,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    vx: (Math.random() - 0.5) * 0.35,
+    vy: -(Math.random() * 0.45 + 0.15),
+    alpha: Math.random() * 0.55 + 0.2,
+    pulseSpeed: Math.random() * 0.02 + 0.01,
+    phase: Math.random() * Math.PI * 2
+  }));
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+
+    particles.forEach((p) => {
+      p.x += p.vx + Math.sin(p.phase) * 0.2;
+      p.y += p.vy;
+      p.phase += p.pulseSpeed;
+      const currentAlpha = Math.max(0.1, p.alpha + Math.sin(p.phase) * 0.15);
+
+      if (p.y < -10) {
+        p.y = height + 10;
+        p.x = Math.random() * width;
+      }
+      if (p.x < -10) p.x = width + 10;
+      if (p.x > width + 10) p.x = -10;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = p.color.replace(/[\d\.]+\)$/, `${currentAlpha})`);
+      ctx.shadowBlur = p.radius * 3;
+      ctx.shadowColor = p.color;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+}
+
+/**
+ * Interactive Button Ripples
+ */
+function initButtonEffects() {
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn-big-roll, .mode-btn, .nav-tab, .btn-bgm-toggle, .btn-step-nav");
+    if (!btn) return;
+
+    const rect = btn.getBoundingClientRect();
+    const circle = document.createElement("span");
+    const diameter = Math.max(rect.width, rect.height);
+    const radius = diameter / 2;
+
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${e.clientX - rect.left - radius}px`;
+    circle.style.top = `${e.clientY - rect.top - radius}px`;
+    circle.classList.add("btn-ripple");
+
+    const existing = btn.querySelector(".btn-ripple");
+    if (existing) existing.remove();
+
+    btn.appendChild(circle);
+    setTimeout(() => circle.remove(), 600);
+  });
 }
