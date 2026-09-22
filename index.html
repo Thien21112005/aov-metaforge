@@ -3,43 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Liên Quân Mobile - Gacha Đội Hình & Phân Tích Cấm Chọn Meta</title>
-  <!-- Google Fonts: Inter & Be Vietnam Pro -->
+  <title>AOV MetaForge - Hệ Thống Cấm Chọn Snake Draft & Gacha Đội Hình Liên Quân</title>
+  
+  <!-- Google Fonts: Outfit (Esports Headings) & Be Vietnam Pro (Vietnamese Precision) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css">
+  
+  <!-- GSAP Animation Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
 
+  <!-- Ambient Cinematic Stage Background -->
+  <div class="stage-bg-backdrop"></div>
+  <div class="stage-glow-cyan"></div>
+  <div class="stage-glow-crimson"></div>
+
   <div class="app-wrapper">
-    <!-- APP HEADER -->
+    <!-- APP HEADER: FLOATING GLASS PILL -->
     <header class="app-header">
       <div class="brand-area">
-        <img class="brand-logo" src="https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg" alt="AOV Logo"/>
+        <div class="brand-badge">AOV</div>
         <div>
-          <h1 class="brand-title">LIÊN QUÂN MOBILE</h1>
-          <p class="brand-subtitle">Gacha Đội Hình Nhân Phẩm & Phân Tích Cấm Chọn Chuẩn Meta</p>
+          <h1 class="brand-title">AOV METAFORGE</h1>
+          <p class="brand-subtitle">Hệ Thống Mô Phỏng Cấm Chọn Snake Draft & Gacha Đội Hình Chuẩn Meta</p>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
       <nav class="nav-tabs">
         <button class="nav-tab active" data-target="tab-gacha">
-          <span>🎰</span> Gacha Đội Hình
+          <span class="nav-indicator"></span>
+          GACHA DRAFT
         </button>
         <button class="nav-tab" data-target="tab-banpick">
-          <span>⚔️</span> Cấm Chọn & Khắc Chế
+          <span class="nav-indicator"></span>
+          TOURNAMENT BAN/PICK
         </button>
         <button class="nav-tab" data-target="tab-catalog">
-          <span>📖</span> Bách Khoa Tướng (129)
+          <span class="nav-indicator"></span>
+          HERO COMPENDIUM (129)
         </button>
       </nav>
 
       <div class="header-actions">
         <button class="btn-icon-pill" id="btn-toggle-sound" title="Bật/Tắt âm thanh">
-          🔊 Bật Âm
+          <span class="sound-dot"></span> AUDIO ON
         </button>
       </div>
     </header>
@@ -56,27 +69,28 @@
           <!-- Controls Card -->
           <div class="gacha-controls-card">
             <div class="gacha-title-row">
-              <h2>🎲 Vòng Quay Gacha Đội Hình</h2>
-              <p>Quay ngẫu nhiên 1 tướng, cụm tướng hoặc nguyên đội hình 5v5 chuẩn theo từng đường và meta hiện tại</p>
+              <span class="section-tag">SIMULATOR</span>
+              <h2>VÒNG QUAY GACHA ĐỘI HÌNH CHUẨN META</h2>
+              <p>Thuật toán quay phân bổ chuẩn xác theo từng đường, trọng số meta giải đấu và tỷ lệ nhân phẩm đặc biệt</p>
             </div>
 
             <div class="gacha-modes-bar">
-              <button class="mode-btn active" data-mode="5">🌟 Full Team 5v5 (5 Đường)</button>
-              <button class="mode-btn" data-mode="3">⚔️ Bộ 3 Mid - Rừng - SP</button>
-              <button class="mode-btn" data-mode="2">🏹 Cặp Đôi Đường Rồng (AD-SP)</button>
-              <button class="mode-btn" data-mode="1">🎯 Quay 1 Tướng</button>
+              <button class="mode-btn active" data-mode="5">FULL TEAM 5v5 (5 ĐƯỜNG)</button>
+              <button class="mode-btn" data-mode="3">TRIO MID - RỪNG - SUP</button>
+              <button class="mode-btn" data-mode="2">BOT DUO AD - SUP</button>
+              <button class="mode-btn" data-mode="1">QUAY 1 TƯỚNG</button>
               <select class="lane-select-inline" id="gacha-lane-select-1" style="display: none;">
-                <option value="all">Ngẫu nhiên đường</option>
-                <option value="top">🛡️ Đường Caesar (Top)</option>
-                <option value="jungle">⚔️ Đường Rừng (Jungle)</option>
-                <option value="mid">🔮 Đường Giữa (Mid)</option>
-                <option value="ad">🏹 Đường Rồng (Xạ Thủ)</option>
-                <option value="sp">💚 Trợ Thủ (Support)</option>
+                <option value="all">NGẪU NHIÊN ĐƯỜNG</option>
+                <option value="top">ĐƯỜNG CAESAR (TOP)</option>
+                <option value="jungle">ĐƯỜNG RỪNG (JUNGLE)</option>
+                <option value="mid">ĐƯỜNG GIỮA (MID)</option>
+                <option value="ad">ĐƯỜNG RỒNG (AD)</option>
+                <option value="sp">TRỢ THỦ (SUPPORT)</option>
               </select>
             </div>
 
             <button class="btn-big-roll" id="btn-roll-gacha">
-              🎲 BẮT ĐẦU QUAY GACHA
+              BẮT ĐẦU QUAY GACHA
             </button>
           </div>
 
@@ -91,8 +105,8 @@
           <!-- Gacha Archive / History Section -->
           <div class="gacha-archive-card">
             <div class="archive-header">
-              <h3>📜 Lịch Sử & Archive Quay Gacha</h3>
-              <button class="btn-clear" id="btn-clear-archive">Xóa lịch sử</button>
+              <h3>LỊCH SỬ THIẾT LẬP ĐỘI HÌNH</h3>
+              <button class="btn-clear" id="btn-clear-archive">XÓA LỊCH SỬ</button>
             </div>
             <div class="archive-list" id="gacha-archive-list">
               <!-- Dynamically populated by gacha.js -->
@@ -106,34 +120,36 @@
            TAB 2: CẤM / CHỌN & PHÂN TÍCH KHẮC CHẾ THÔNG MINH
            =================================================== -->
       <section id="tab-banpick" class="tab-panel">
+        <div class="bp-dashboard">
+          
           <!-- DRAFT TURN CONTROLLER (SNAKE PICK: 1 - 2 - 2 - 2 - 2 - 1) -->
           <div class="draft-turn-panel">
             <div class="draft-turn-top">
               <div class="draft-mode-selector">
-                <span class="draft-lbl">🎯 Chọn Đội Pick Trước (First Pick):</span>
+                <span class="draft-lbl">ĐỘI CHỌN TRƯỚC (FIRST PICK):</span>
                 <div class="first-pick-pill-group">
-                  <button class="first-pick-btn active" id="btn-blue-first" data-first="blue" title="Chọn Đội Xanh chọn trước 1 tướng">
-                    🔵 Đội Xanh Pick Trước
+                  <button class="first-pick-btn active" id="btn-blue-first" data-first="blue" title="Chọn Đội Xanh pick trước">
+                    ĐỘI XANH (BLUE)
                   </button>
-                  <button class="first-pick-btn" id="btn-red-first" data-first="red" title="Chọn Đội Đỏ chọn trước 1 tướng">
-                    🔴 Đội Đỏ Pick Trước
+                  <button class="first-pick-btn" id="btn-red-first" data-first="red" title="Chọn Đội Đỏ pick trước">
+                    ĐỘI ĐỎ (RED)
                   </button>
                 </div>
               </div>
               <div class="draft-step-actions">
-                <button class="btn-step-nav" id="btn-prev-step" title="Quay lại lượt trước">◀ Lượt trước</button>
-                <button class="btn-step-nav" id="btn-next-step" title="Chuyển sang lượt kế tiếp">Lượt tiếp ▶</button>
+                <button class="btn-step-nav" id="btn-prev-step" title="Quay lại lượt trước">LƯỢT TRƯỚC</button>
+                <button class="btn-step-nav" id="btn-next-step" title="Chuyển sang lượt kế tiếp">LƯỢT TIẾP</button>
               </div>
             </div>
 
             <!-- Visual Stepper timeline: 1 -> 2 -> 2 -> 2 -> 2 -> 1 -->
             <div class="draft-stepper-track" id="draft-stepper-track">
-              <!-- Populated by banpick.js -->
+              <!-- Populated by draft.js -->
             </div>
 
             <!-- Current Turn Banner -->
             <div class="current-turn-banner" id="current-turn-banner">
-              <!-- Populated by banpick.js -->
+              <!-- Populated by draft.js -->
             </div>
           </div>
 
@@ -143,33 +159,36 @@
             <!-- BLUE TEAM -->
             <div class="team-card blue-team-card">
               <div class="team-card-header">
-                <h3>🔵 ĐỘI XANH (BLUE TEAM)</h3>
+                <div class="team-card-title-group">
+                  <span class="team-indicator blue-indicator"></span>
+                  <h3>ĐỘI XANH (BLUE TEAM)</h3>
+                </div>
                 <button class="btn-team-first-tag active" id="btn-tag-blue-first" title="Bấm để chọn Đội Xanh Pick Trước">
-                  👑 First Pick
+                  FIRST PICK
                 </button>
               </div>
-              <div class="section-subhead">Lượt Cấm (5)</div>
-              <!-- 5 Bans Blue -->
+              <div class="section-subhead">LƯỢT CẤM (5)</div>
               <div class="bans-row" id="blue-bans"></div>
 
-              <div class="section-subhead">Lượt Chọn Theo Đường (5)</div>
-              <!-- 5 Picks Blue -->
+              <div class="section-subhead">LƯỢT CHỌN THEO VỊ TRÍ (5)</div>
               <div class="picks-column" id="blue-picks"></div>
             </div>
 
             <!-- RED TEAM -->
             <div class="team-card red-team-card">
               <div class="team-card-header">
-                <h3>🔴 ĐỘI ĐỎ (RED TEAM)</h3>
+                <div class="team-card-title-group">
+                  <span class="team-indicator red-indicator"></span>
+                  <h3>ĐỘI ĐỎ (RED TEAM)</h3>
+                </div>
                 <button class="btn-team-first-tag" id="btn-tag-red-first" title="Bấm để chọn Đội Đỏ Pick Trước">
-                  ⚔️ Pick Sau
+                  SECOND PICK
                 </button>
               </div>
-              <div class="section-subhead">Lượt Cấm (5)</div>
+              <div class="section-subhead">LƯỢT CẤM (5)</div>
               <div class="bans-row" id="red-bans"></div>
 
-              <div class="section-subhead">Lượt Chọn Theo Đường (5)</div>
-              <!-- 5 Picks Red -->
+              <div class="section-subhead">LƯỢT CHỌN THEO VỊ TRÍ (5)</div>
               <div class="picks-column" id="red-picks"></div>
             </div>
 
@@ -178,23 +197,25 @@
           <!-- ARENA ACTIONS -->
           <div class="arena-actions-bar">
             <button class="btn-outline-action" id="btn-quick-meta-fill">
-              ⚡ Xem Tình Huống Mẫu (Đối thủ Pick Tamyn Top)
+              TÌNH HUỐNG MẪU (SNAKE DRAFT DEMO)
             </button>
             <button class="btn-outline-action" id="btn-reset-banpick">
-              🔄 Đặt Lại Trận Đấu
+              ĐẶT LẠI TRẬN ĐẤU
             </button>
           </div>
 
           <!-- SMART AI COUNTER & ANALYSIS PANEL -->
           <div class="analysis-panel">
             <div class="analysis-panel-header">
-              <h3>🧠 Trí Tuệ Phân Tích Khắc Chế & Cân Bằng Đội Hình</h3>
-              <span class="ai-badge">AI REALTIME META</span>
+              <div class="analysis-header-title">
+                <span class="ai-badge">AI REALTIME META</span>
+                <h3>TRÍ TUỆ PHÂN TÍCH KHẮC CHẾ & TƯƠNG QUAN LỰC LƯỢNG</h3>
+              </div>
             </div>
 
             <!-- Dynamic Content (Alerts, Counters, Matchups) -->
             <div id="bp-analysis-content">
-              <!-- Dynamically populated by banpick.js -->
+              <!-- Dynamically populated by analyzer.js -->
             </div>
 
             <!-- Team Radar / Metrics -->
@@ -208,18 +229,18 @@
       </section>
 
       <!-- ===================================================
-           TAB 3: HERO CATALOG (129 VỊ TƯỚNG)
+           TAB 3: HERO COMPENDIUM (129 VỊ TƯỚNG)
            =================================================== -->
       <section id="tab-catalog" class="tab-panel">
         <div class="catalog-header-bar">
-          <input type="text" id="catalog-search" class="catalog-search-input" placeholder="🔍 Tìm kiếm tướng (vd: Tamyn, Florentino, Nakroth...)" />
+          <input type="text" id="catalog-search" class="catalog-search-input" placeholder="Tìm kiếm tướng (Tamyn, Florentino, Astrid, Butterfly, Nakroth...)" />
           <div class="catalog-filters">
-            <button class="catalog-filter-btn active" data-lane="all">Tất cả</button>
-            <button class="catalog-filter-btn" data-lane="top">🛡️ Top</button>
-            <button class="catalog-filter-btn" data-lane="jungle">⚔️ Rừng</button>
-            <button class="catalog-filter-btn" data-lane="mid">🔮 Mid</button>
-            <button class="catalog-filter-btn" data-lane="ad">🏹 AD</button>
-            <button class="catalog-filter-btn" data-lane="sp">💚 SP</button>
+            <button class="catalog-filter-btn active" data-lane="all">TẤT CẢ</button>
+            <button class="catalog-filter-btn" data-lane="top">TOP</button>
+            <button class="catalog-filter-btn" data-lane="jungle">RỪNG</button>
+            <button class="catalog-filter-btn" data-lane="mid">MID</button>
+            <button class="catalog-filter-btn" data-lane="ad">AD</button>
+            <button class="catalog-filter-btn" data-lane="sp">SUP</button>
           </div>
         </div>
 
@@ -237,18 +258,18 @@
   <div class="modal-overlay" id="hero-picker-modal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 id="modal-picker-title">Chọn Tướng</h3>
+        <h3 id="modal-picker-title">CHỌN TƯỚNG</h3>
         <button class="modal-close-btn" id="modal-close-btn">&times;</button>
       </div>
       <div class="modal-controls">
-        <input type="text" id="modal-search-input" class="modal-search" placeholder="🔍 Nhập tên tướng cần tìm..." />
+        <input type="text" id="modal-search-input" class="modal-search" placeholder="Nhập tên tướng cần chọn..." />
         <div class="modal-role-filters">
-          <button class="modal-role-btn active" data-lane="all">Tất cả</button>
-          <button class="modal-role-btn" data-lane="top">Top</button>
-          <button class="modal-role-btn" data-lane="jungle">Rừng</button>
-          <button class="modal-role-btn" data-lane="mid">Mid</button>
+          <button class="modal-role-btn active" data-lane="all">TẤT CẢ</button>
+          <button class="modal-role-btn" data-lane="top">TOP</button>
+          <button class="modal-role-btn" data-lane="jungle">RỪNG</button>
+          <button class="modal-role-btn" data-lane="mid">MID</button>
           <button class="modal-role-btn" data-lane="ad">AD</button>
-          <button class="modal-role-btn" data-lane="sp">SP</button>
+          <button class="modal-role-btn" data-lane="sp">SUP</button>
         </div>
       </div>
       <div class="modal-body">
@@ -263,9 +284,9 @@
        MODAL: HERO DETAIL
        =================================================== -->
   <div class="modal-overlay" id="hero-detail-modal">
-    <div class="modal-content" style="max-width: 680px;">
+    <div class="modal-content modal-detail-box">
       <div class="modal-header">
-        <h3>Thông Tin Tướng & Khắc Chế</h3>
+        <h3>THÔNG SỐ CHIẾN THUẬT & KHẮC CHẾ</h3>
         <button class="modal-close-btn" id="detail-modal-close">&times;</button>
       </div>
       <div class="modal-body" id="hero-detail-content">
