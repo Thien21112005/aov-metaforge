@@ -112,16 +112,16 @@ class GachaManager {
       slotEl.id = `reel-slot-${index}`;
 
       slotEl.innerHTML = `
-        <div class="slot-header" style="border-top-color: ${laneInfo.color}">
-          <span class="lane-name">${laneInfo.shortName.toUpperCase()}</span>
+        <div class="slot-header" style="border-top: 3px solid ${laneInfo.color}">
+          <span class="lane-name"><span class="lane-icon-sub">${laneInfo.icon}</span> ${laneInfo.shortName.toUpperCase()}</span>
           <span class="lane-badge-sub">${laneInfo.name}</span>
         </div>
         <div class="slot-window">
           <div class="slot-strip" id="slot-strip-${index}">
             <div class="reel-card idle-card">
-              <div class="card-avatar placeholder-avatar">${laneInfo.shortName}</div>
-              <div class="card-name">SẴN SÀNG</div>
-              <div class="card-badge">BẤM QUAY</div>
+              <div class="card-avatar placeholder-avatar" style="border-color: ${laneInfo.color}">${laneInfo.icon}</div>
+              <div class="card-name">${laneInfo.shortName}</div>
+              <div class="card-badge">SẴN SÀNG</div>
             </div>
           </div>
         </div>
@@ -145,7 +145,7 @@ class GachaManager {
 
     const rollResults = [];
     const usedHeroIds = new Set();
-    const CARD_HEIGHT = 160;
+    const CARD_HEIGHT = 120;
     const STRIP_COUNT = 24;
 
     this.activeLanes.forEach((laneKey, index) => {
