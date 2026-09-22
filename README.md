@@ -29,7 +29,7 @@ A modern, high-performance web platform designed for Arena of Valor (Liên Quân
   - [5. Ambient Visuals & BGM Audio Engine](#5-ambient-visuals--bgm-audio-engine)
 - [Project Architecture](#project-architecture)
 - [Getting Started](#getting-started)
-- [Data Provenance](#data-provenance)
+- [Data Provenance & Refresh Guide](#data-provenance--refresh-guide)
 - [License & Disclaimer](#license--disclaimer)
 
 ---
@@ -109,9 +109,22 @@ The server will start at `http://localhost:8080/index.html`.
 
 ---
 
-### Data Provenance
+### Data Provenance & Refresh Guide
 
 All skill parameters, damage values, and base stats are synchronized with official Garena Vietnam Lien Quan Mobile databases through the companion project [`aov-scrapecore`](https://github.com/Thien21112005/aov-scrapecore).
+
+#### How to Refresh or Customize Champion Data
+When game updates or balance patches are released:
+1. **Live update a single champion from Garena**: In `aov-scrapecore`, run:
+   ```bash
+   python cli.py --update-skills "Tamyn"
+   ```
+   *Fetches latest skills and descriptions from Garena and updates `js/core/data.js` within seconds.*
+2. **Refresh all 129 champions**: In `aov-scrapecore`, run:
+   ```bash
+   python sync_metaforge.py --all
+   ```
+3. **Manual Meta Tuning**: Open `js/core/data.js` and modify `tier` (`S+`, `S`, `A`, `B`), `mobility` (1-100), `cc_rating` (1-100), or `countered_by` / `counters` lists. Changes take effect immediately upon page reload.
 
 ---
 
@@ -143,7 +156,7 @@ Nền tảng Web cao cấp dành cho game thủ, chuyên viên phân tích chi�
   - [5. Sân Khấu Chuyển Động & Âm Thanh eSports](#5-sân-khấu-chuyển-động--âm-thanh-esports)
 - [Cấu Trúc Dự Án](#cấu-trúc-dự-án)
 - [Hướng Dẫn Sử Dụng](#hướng-dẫn-sử-dụng-1)
-- [Nguồn Dữ Liệu](#nguồn-dữ-liệu)
+- [Nguồn Dữ Liệu & Hướng Dẫn Cập Nhật](#nguồn-dữ-liệu--hướng-dẫn-cập-nhật)
 - [Bản Quyền & Tuyên Bố Miễn Trừ](#bản-quyền--tuyên-bố-miễn-trừ)
 
 ---
@@ -223,9 +236,26 @@ Trang web sẽ tự động mở tại địa chỉ: `http://localhost:8080/inde
 
 ---
 
-### Nguồn Dữ Liệu
+### Nguồn Dữ Liệu & Hướng Dẫn Cập Nhật
 
 Toàn bộ thông số kỹ năng, giá trị sát thương và tỷ lệ tướng được trích xuất và đồng bộ từ cổng thông tin Liên Quân Mobile Garena Việt Nam thông qua công cụ đồng hành [`aov-scrapecore`](https://github.com/Thien21112005/aov-scrapecore).
+
+#### Hướng Dẫn Làm Mới & Chỉnh Sửa Thông Số Tướng
+Khi game có bản cập nhật tăng/giảm sức mạnh hoặc đổi meta:
+1. **Cập nhật nhanh 1 tướng từ Garena**: Mở terminal trong thư mục `aov-scrapecore` và chạy:
+   ```bash
+   python cli.py --update-skills "Tamyn"
+   ```
+   *Tool sẽ bóc tách bài viết mới nhất từ Garena và tự động bơm thẳng vào `js/core/data.js` của web.*
+2. **Làm mới toàn bộ 129 tướng**: Trong `aov-scrapecore`, chạy:
+   ```bash
+   python sync_metaforge.py --all
+   ```
+3. **Tùy chỉnh thông số Meta thủ công**: Mở trực tiếp file `js/core/data.js` để chỉnh sửa các trường:
+   - `tier`: Xếp hạng meta (`S+`, `S`, `A`, `B`).
+   - `mobility`: Điểm cơ động (1 - 100).
+   - `cc_rating`: Điểm khống chế cứng (1 - 100).
+   - `countered_by` / `counters`: Danh sách tướng khắc chế.
 
 ---
 
