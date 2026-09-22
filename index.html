@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liên Quân Mobile - Gacha Đội Hình & Phân Tích Cấm Chọn Meta</title>
+  <!-- Google Fonts: Inter & Be Vietnam Pro -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- APP HEADER -->
+    <header class="app-header">
+      <div class="brand-area">
+        <img class="brand-logo" src="https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg" alt="AOV Logo"/>
+        <div>
+          <h1 class="brand-title">LIÊN QUÂN MOBILE</h1>
+          <p class="brand-subtitle">Gacha Đội Hình Nhân Phẩm & Phân Tích Cấm Chọn Chuẩn Meta</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs">
+        <button class="nav-tab active" data-target="tab-gacha">
+          <span>🎰</span> Gacha Đội Hình
+        </button>
+        <button class="nav-tab" data-target="tab-banpick">
+          <span>⚔️</span> Cấm Chọn & Khắc Chế
+        </button>
+        <button class="nav-tab" data-target="tab-catalog">
+          <span>📖</span> Bách Khoa Tướng (129)
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button class="btn-icon-pill" id="btn-toggle-sound" title="Bật/Tắt âm thanh">
+          🔊 Bật Âm
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT TABS -->
+    <main class="app-main">
+      
+      <!-- ===================================================
+           TAB 1: GACHA VÒNG QUAY NHÂN PHẨM & ĐỘI HÌNH
+           =================================================== -->
+      <section id="tab-gacha" class="tab-panel active">
+        <div class="gacha-dashboard">
+          
+          <!-- Controls Card -->
+          <div class="gacha-controls-card">
+            <div class="gacha-title-row">
+              <h2>🎲 Vòng Quay Gacha Đội Hình</h2>
+              <p>Quay ngẫu nhiên 1 tướng, cụm tướng hoặc nguyên đội hình 5v5 chuẩn theo từng đường và meta hiện tại</p>
+            </div>
+
+            <div class="gacha-modes-bar">
+              <button class="mode-btn active" data-mode="5">🌟 Full Team 5v5 (5 Đường)</button>
+              <button class="mode-btn" data-mode="3">⚔️ Bộ 3 Mid - Rừng - SP</button>
+              <button class="mode-btn" data-mode="2">🏹 Cặp Đôi Đường Rồng (AD-SP)</button>
+              <button class="mode-btn" data-mode="1">🎯 Quay 1 Tướng</button>
+              <select class="lane-select-inline" id="gacha-lane-select-1" style="display: none;">
+                <option value="all">Ngẫu nhiên đường</option>
+                <option value="top">🛡️ Đường Caesar (Top)</option>
+                <option value="jungle">⚔️ Đường Rừng (Jungle)</option>
+                <option value="mid">🔮 Đường Giữa (Mid)</option>
+                <option value="ad">🏹 Đường Rồng (Xạ Thủ)</option>
+                <option value="sp">💚 Trợ Thủ (Support)</option>
+              </select>
+            </div>
+
+            <button class="btn-big-roll" id="btn-roll-gacha">
+              🎲 BẮT ĐẦU QUAY GACHA
+            </button>
+          </div>
+
+          <!-- Result Winning Announcement -->
+          <div class="result-banner" id="gacha-result-banner"></div>
+
+          <!-- Reel Slots Container -->
+          <div id="gacha-reels-container" class="reels-grid lanes-count-5">
+            <!-- Dynamically populated by gacha.js -->
+          </div>
+
+          <!-- Gacha Archive / History Section -->
+          <div class="gacha-archive-card">
+            <div class="archive-header">
+              <h3>📜 Lịch Sử & Archive Quay Gacha</h3>
+              <button class="btn-clear" id="btn-clear-archive">Xóa lịch sử</button>
+            </div>
+            <div class="archive-list" id="gacha-archive-list">
+              <!-- Dynamically populated by gacha.js -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================
+           TAB 2: CẤM / CHỌN & PHÂN TÍCH KHẮC CHẾ THÔNG MINH
+           =================================================== -->
+      <section id="tab-banpick" class="tab-panel">
+          <!-- DRAFT TURN CONTROLLER (SNAKE PICK: 1 - 2 - 2 - 2 - 2 - 1) -->
+          <div class="draft-turn-panel">
+            <div class="draft-turn-top">
+              <div class="draft-mode-selector">
+                <span class="draft-lbl">🎯 Chọn Đội Pick Trước (First Pick):</span>
+                <div class="first-pick-pill-group">
+                  <button class="first-pick-btn active" id="btn-blue-first" data-first="blue" title="Chọn Đội Xanh chọn trước 1 tướng">
+                    🔵 Đội Xanh Pick Trước
+                  </button>
+                  <button class="first-pick-btn" id="btn-red-first" data-first="red" title="Chọn Đội Đỏ chọn trước 1 tướng">
+                    🔴 Đội Đỏ Pick Trước
+                  </button>
+                </div>
+              </div>
+              <div class="draft-step-actions">
+                <button class="btn-step-nav" id="btn-prev-step" title="Quay lại lượt trước">◀ Lượt trước</button>
+                <button class="btn-step-nav" id="btn-next-step" title="Chuyển sang lượt kế tiếp">Lượt tiếp ▶</button>
+              </div>
+            </div>
+
+            <!-- Visual Stepper timeline: 1 -> 2 -> 2 -> 2 -> 2 -> 1 -->
+            <div class="draft-stepper-track" id="draft-stepper-track">
+              <!-- Populated by banpick.js -->
+            </div>
+
+            <!-- Current Turn Banner -->
+            <div class="current-turn-banner" id="current-turn-banner">
+              <!-- Populated by banpick.js -->
+            </div>
+          </div>
+
+          <!-- BAN PICK ARENA: BLUE VS RED -->
+          <div class="bp-arena">
+            
+            <!-- BLUE TEAM -->
+            <div class="team-card blue-team-card">
+              <div class="team-card-header">
+                <h3>🔵 ĐỘI XANH (BLUE TEAM)</h3>
+                <button class="btn-team-first-tag active" id="btn-tag-blue-first" title="Bấm để chọn Đội Xanh Pick Trước">
+                  👑 First Pick
+                </button>
+              </div>
+              <div class="section-subhead">Lượt Cấm (5)</div>
+              <!-- 5 Bans Blue -->
+              <div class="bans-row" id="blue-bans"></div>
+
+              <div class="section-subhead">Lượt Chọn Theo Đường (5)</div>
+              <!-- 5 Picks Blue -->
+              <div class="picks-column" id="blue-picks"></div>
+            </div>
+
+            <!-- RED TEAM -->
+            <div class="team-card red-team-card">
+              <div class="team-card-header">
+                <h3>🔴 ĐỘI ĐỎ (RED TEAM)</h3>
+                <button class="btn-team-first-tag" id="btn-tag-red-first" title="Bấm để chọn Đội Đỏ Pick Trước">
+                  ⚔️ Pick Sau
+                </button>
+              </div>
+              <div class="section-subhead">Lượt Cấm (5)</div>
+              <div class="bans-row" id="red-bans"></div>
+
+              <div class="section-subhead">Lượt Chọn Theo Đường (5)</div>
+              <!-- 5 Picks Red -->
+              <div class="picks-column" id="red-picks"></div>
+            </div>
+
+          </div>
+
+          <!-- ARENA ACTIONS -->
+          <div class="arena-actions-bar">
+            <button class="btn-outline-action" id="btn-quick-meta-fill">
+              ⚡ Xem Tình Huống Mẫu (Đối thủ Pick Tamyn Top)
+            </button>
+            <button class="btn-outline-action" id="btn-reset-banpick">
+              🔄 Đặt Lại Trận Đấu
+            </button>
+          </div>
+
+          <!-- SMART AI COUNTER & ANALYSIS PANEL -->
+          <div class="analysis-panel">
+            <div class="analysis-panel-header">
+              <h3>🧠 Trí Tuệ Phân Tích Khắc Chế & Cân Bằng Đội Hình</h3>
+              <span class="ai-badge">AI REALTIME META</span>
+            </div>
+
+            <!-- Dynamic Content (Alerts, Counters, Matchups) -->
+            <div id="bp-analysis-content">
+              <!-- Dynamically populated by banpick.js -->
+            </div>
+
+            <!-- Team Radar / Metrics -->
+            <div class="team-metrics-comparison">
+              <div id="blue-team-metrics"></div>
+              <div id="red-team-metrics"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ===================================================
+           TAB 3: HERO CATALOG (129 VỊ TƯỚNG)
+           =================================================== -->
+      <section id="tab-catalog" class="tab-panel">
+        <div class="catalog-header-bar">
+          <input type="text" id="catalog-search" class="catalog-search-input" placeholder="🔍 Tìm kiếm tướng (vd: Tamyn, Florentino, Nakroth...)" />
+          <div class="catalog-filters">
+            <button class="catalog-filter-btn active" data-lane="all">Tất cả</button>
+            <button class="catalog-filter-btn" data-lane="top">🛡️ Top</button>
+            <button class="catalog-filter-btn" data-lane="jungle">⚔️ Rừng</button>
+            <button class="catalog-filter-btn" data-lane="mid">🔮 Mid</button>
+            <button class="catalog-filter-btn" data-lane="ad">🏹 AD</button>
+            <button class="catalog-filter-btn" data-lane="sp">💚 SP</button>
+          </div>
+        </div>
+
+        <div class="catalog-grid" id="catalog-grid">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===================================================
+       MODAL: HERO PICKER (FOR BAN / PICK)
+       =================================================== -->
+  <div class="modal-overlay" id="hero-picker-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-picker-title">Chọn Tướng</h3>
+        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-controls">
+        <input type="text" id="modal-search-input" class="modal-search" placeholder="🔍 Nhập tên tướng cần tìm..." />
+        <div class="modal-role-filters">
+          <button class="modal-role-btn active" data-lane="all">Tất cả</button>
+          <button class="modal-role-btn" data-lane="top">Top</button>
+          <button class="modal-role-btn" data-lane="jungle">Rừng</button>
+          <button class="modal-role-btn" data-lane="mid">Mid</button>
+          <button class="modal-role-btn" data-lane="ad">AD</button>
+          <button class="modal-role-btn" data-lane="sp">SP</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="picker-grid" id="modal-heroes-grid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       MODAL: HERO DETAIL
+       =================================================== -->
+  <div class="modal-overlay" id="hero-detail-modal">
+    <div class="modal-content" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3>Thông Tin Tướng & Khắc Chế</h3>
+        <button class="modal-close-btn" id="detail-modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="hero-detail-content">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/gacha.js"></script>
+  <script src="js/banpick.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
