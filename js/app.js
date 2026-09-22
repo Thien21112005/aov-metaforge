@@ -1,11 +1,12 @@
 /**
- * Main Application Coordinator
+ * AOV MetaForge - Application Coordinator & Catalog View
  */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Initialize Managers
+  // 1. Initialize Core Managers
   window.gachaManager = new GachaManager();
-  window.bpManager = new BanPickManager();
+  window.draftManager = new DraftManager();
+  window.bpManager = window.draftManager; // Alias for backward compatibility
 
   // 2. Tab Navigation
   const navTabs = document.querySelectorAll(".nav-tab");
@@ -13,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   navTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      sounds.playClick();
+      if (typeof sounds !== "undefined") sounds.playClick();
       navTabs.forEach((t) => t.classList.remove("active"));
       tabPanels.forEach((p) => p.classList.remove("active"));
 
@@ -21,16 +22,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const targetPanel = document.getElementById(tab.dataset.target);
       if (targetPanel) {
         targetPanel.classList.add("active");
+        // Animate entrance if GSAP is loaded
+        if (window.gsap) {
+          window.gsap.fromTo(
+            targetPanel,
+            { opacity: 0, y: 12 },
+            { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
+          );
+        }
       }
     });
   });
 
   // 3. Sound Toggle Button
   const btnSound = document.getElementById("btn-toggle-sound");
-  if (btnSound) {
+  if (btnSound && typeof sounds !== "undefined") {
     btnSound.addEventListener("click", () => {
       sounds.muted = !sounds.muted;
-      btnSound.innerHTML = sounds.muted ? "🔇 Đã Tắt Âm" : "🔊 Bật Âm";
+      btnSound.innerHTML = sounds.muted ? "AUDIO OFF" : "AUDIO ON";
       btnSound.classList.toggle("muted", sounds.muted);
     });
   }
@@ -69,7 +78,7 @@ function initHeroCatalog() {
         <div class="catalog-avatar">
           <img src="${h.avatar}" alt="${h.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
           <span class="catalog-tier" style="background:${tier.color}">${h.tier}</span>
-          <span class="catalog-lane" style="background:${lane?.color || "#666"}">${lane?.icon} ${lane?.shortName}</span>
+          <span class="catalog-lane" style="background:${lane?.color || "#666"}">${lane?.shortName || ""}</span>
         </div>
         <div class="catalog-info">
           <div class="catalog-name">${h.name}</div>
@@ -94,7 +103,7 @@ function initHeroCatalog() {
 
   roleButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      sounds.playClick();
+      if (typeof sounds !== "undefined") sounds.playClick();
       roleButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       render(btn.dataset.lane, searchInput?.value.trim() || "");
@@ -116,7 +125,7 @@ function initHeroDetailModal() {
 }
 
 function showHeroDetail(hero) {
-  sounds.playClick();
+  if (typeof sounds !== "undefined") sounds.playClick();
   const modal = document.getElementById("hero-detail-modal");
   const contentEl = document.getElementById("hero-detail-content");
   if (!modal || !contentEl) return;
@@ -133,41 +142,41 @@ function showHeroDetail(hero) {
       <div class="detail-meta">
         <h2>${hero.name}</h2>
         <div class="detail-tags">
-          <span class="tag-lane" style="background:${lane?.color}">${lane?.icon} ${lane?.name}</span>
+          <span class="tag-lane" style="background:${lane?.color}">${lane?.name || ""}</span>
           <span class="tag-role">${hero.roles.join(" • ")}</span>
         </div>
-        <p class="detail-strengths">💪 <b>Điểm mạnh:</b> ${hero.strengths}</p>
-        <p class="detail-weaknesses">⚠️ <b>Điểm yếu:</b> ${hero.weaknesses}</p>
+        <p class="detail-strengths"><strong>Điểm mạnh:</strong> ${hero.strengths}</p>
+        <p class="detail-weaknesses"><strong>Điểm yếu:</strong> ${hero.weaknesses}</p>
       </div>
     </div>
 
     <div class="detail-sections">
       <div class="detail-box">
-        <h3>🛡️ Tướng Khắc Chế Được:</h3>
-        <p>${(hero.counters || []).map((id) => {
+        <h3>TƯỚNG KHẮC CHẾ ĐƯỢC</h3>
+        <div class="chips-container">${(hero.counters || []).map((id) => {
           const c = HEROES_DATABASE.find((h) => h.id === id);
           return c ? `<span class="badge-chip win-chip">${c.name}</span>` : "";
-        }).join(" ") || "Đa dụng trong nhiều kèo đấu"}</p>
+        }).join(" ") || "Đa dụng trong nhiều kèo đấu"}</div>
       </div>
 
       <div class="detail-box">
-        <h3>⚔️ Bị Khắc Chế Bởi:</h3>
-        <p>${(hero.countered_by || []).map((id) => {
+        <h3>BỊ KHẮC CHẾ BỞI</h3>
+        <div class="chips-container">${(hero.countered_by || []).map((id) => {
           const c = HEROES_DATABASE.find((h) => h.id === id);
           return c ? `<span class="badge-chip lose-chip">${c.name}</span>` : "";
-        }).join(" ") || "Ít bị khắc chế cứng"}</p>
+        }).join(" ") || "Ít bị khắc chế cứng"}</div>
       </div>
 
       <div class="detail-box">
-        <h3>🤝 Hợp Đi Chung Với (Synergy):</h3>
-        <p>${(hero.synergies || []).map((id) => {
+        <h3>TƯỚNG KẾT HỢP TỐT (SYNERGY)</h3>
+        <div class="chips-container">${(hero.synergies || []).map((id) => {
           const c = HEROES_DATABASE.find((h) => h.id === id);
           return c ? `<span class="badge-chip syn-chip">${c.name}</span>` : "";
-        }).join(" ") || "Phù hợp nhiều đội hình"}</p>
+        }).join(" ") || "Phù hợp nhiều đội hình"}</div>
       </div>
 
       <div class="detail-box full-width">
-        <h3>💡 Mẹo Chiến Thuật:</h3>
+        <h3>MẸO CHIẾN THUẬT & TRANG BỊ KHẮC CHẾ</h3>
         <p>${hero.counter_tips || "Chú ý kiểm soát bản đồ và giữ vị trí an toàn."}</p>
       </div>
     </div>
