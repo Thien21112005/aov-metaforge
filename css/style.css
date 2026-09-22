@@ -366,8 +366,8 @@ body {
 @media (max-width: 1180px) {
   .app-header {
     flex-wrap: wrap;
-    padding: 12px 18px;
-    gap: 12px;
+    padding: 8px 14px;
+    gap: 10px;
   }
   .brand-subtitle {
     display: none;
@@ -375,22 +375,100 @@ body {
 }
 
 @media (max-width: 768px) {
+  .app-wrapper {
+    padding: 8px 10px 30px;
+  }
+
   .app-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
   }
+
   .brand-area {
-    justify-content: center;
+    grid-column: 1;
+    grid-row: 1;
+    gap: 8px;
+    justify-content: flex-start;
   }
+
+  .brand-logo-frame {
+    width: 36px;
+    height: 36px;
+  }
+
+  .brand-title {
+    font-size: 1.05rem;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .header-actions {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .bgm-volume-box {
+    display: none;
+  }
+
+  .btn-bgm-toggle {
+    padding: 5px 8px;
+    font-size: 0.7rem;
+  }
+
+  .btn-icon-pill {
+    padding: 5px 8px;
+    font-size: 0.7rem;
+  }
+
   .nav-tabs {
+    grid-column: 1 / -1;
+    grid-row: 2;
     overflow-x: auto;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-start;
+    padding: 3px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
-  .header-actions {
-    justify-content: center;
+
+  .nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-tab {
+    padding: 6px 12px;
+    font-size: 0.74rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Gacha Modes Mobile Scroll */
+  .gacha-modes-bar {
+    overflow-x: auto;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
     width: 100%;
+  }
+
+  .gacha-modes-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mode-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 }
 
@@ -671,17 +749,38 @@ body {
 }
 
 @media (max-width: 960px) {
-  .reels-grid.lanes-count-5,
-  .reels-grid.lanes-count-4 {
+  .reels-grid.lanes-count-5 {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .reels-grid.lanes-count-4 {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 600px) {
-  .reels-grid.lanes-count-5,
+@media (max-width: 640px) {
+  .reels-grid.lanes-count-5 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .reels-grid.lanes-count-5 .reel-slot:last-child {
+    grid-column: span 2;
+    max-width: 280px;
+    margin: 0 auto;
+    width: 100%;
+  }
   .reels-grid.lanes-count-4,
-  .reels-grid.lanes-count-3,
   .reels-grid.lanes-count-2 {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .reels-grid.lanes-count-3 {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+}
+
+@media (max-width: 440px) {
+  .reels-grid.lanes-count-3 {
     grid-template-columns: 1fr;
   }
 }
@@ -2194,8 +2293,46 @@ body {
 
 .catalog-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .catalog-header-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .catalog-search-input {
+    max-width: 100%;
+  }
+  .catalog-filters {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .catalog-filters::-webkit-scrollbar {
+    display: none;
+  }
+  .catalog-filter-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .catalog-grid {
+    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+    gap: 8px;
+  }
+  .catalog-card {
+    padding: 10px;
+  }
+  .detail-sections {
+    grid-template-columns: 1fr !important;
+  }
+  .detail-box.full-width {
+    grid-column: span 1 !important;
+  }
 }
 
 .catalog-card {
