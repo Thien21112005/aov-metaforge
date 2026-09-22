@@ -51,8 +51,23 @@
       </nav>
 
       <div class="header-actions">
-        <button class="btn-icon-pill" id="btn-toggle-sound" title="Bật/Tắt âm thanh">
-          <span class="sound-dot"></span> AUDIO ON
+        <!-- BGM Player Widget -->
+        <div class="bgm-player-widget" id="bgm-player-widget">
+          <button class="btn-bgm-toggle" id="btn-bgm-toggle" title="Phát/Tạm dừng nhạc nền Liên Quân (Hans Zimmer Theme)">
+            <span class="bgm-eq" id="bgm-eq-visualizer">
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+            </span>
+            <span class="bgm-text" id="bgm-status-label">BẬT NHẠC NỀN</span>
+          </button>
+          <div class="bgm-volume-box">
+            <input type="range" id="bgm-volume-slider" class="bgm-slider" min="0" max="100" value="35" title="Âm lượng nhạc nền" />
+          </div>
+        </div>
+
+        <button class="btn-icon-pill" id="btn-toggle-sound" title="Bật/Tắt hiệu ứng âm thanh">
+          <span class="sound-dot"></span> SFX ON
         </button>
       </div>
     </header>
