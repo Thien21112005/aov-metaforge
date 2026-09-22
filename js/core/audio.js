@@ -169,18 +169,16 @@ class SoundController {
 
 /**
  * Arena of Valor Official Theme BGM Controller
- * Features seamless background playback with volume slider and equalizer animation.
+ * High-fidelity local audio player with loop, volume slider and equalizer animation.
  */
 class BGMController {
   constructor() {
     this.isPlaying = false;
-    this.volume = parseInt(localStorage.getItem("aov_bgm_vol") || "35", 10);
-    this.ytPlayer = null;
-    this.isYtReady = false;
+    this.volume = parseInt(localStorage.getItem("aov_bgm_vol") || "40", 10);
     this.audioElement = null;
+    this.userStarted = false;
 
     this.initAudioElement();
-    this.loadYouTubeIframe();
     this.initUI();
   }
 
@@ -190,70 +188,26 @@ class BGMController {
       this.audioElement = document.createElement("audio");
       this.audioElement.id = "aov-bgm-audio";
       this.audioElement.loop = true;
+      this.audioElement.preload = "auto";
       this.audioElement.volume = this.volume / 100;
+      this.audioElement.innerHTML = `
+        <source src="assets/audio/aov_theme.webm" type="audio/webm">
+        <source src="assets/audio/aov_theme.m4a" type="audio/mp4">
+      `;
       document.body.appendChild(this.audioElement);
-    }
-  }
-
-  loadYouTubeIframe() {
-    // Hidden container for YouTube Player API
-    let ytContainer = document.getElementById("yt-bgm-container");
-    if (!ytContainer) {
-      ytContainer = document.createElement("div");
-      ytContainer.id = "yt-bgm-container";
-      ytContainer.style.position = "fixed";
-      ytContainer.style.width = "1px";
-      ytContainer.style.height = "1px";
-      ytContainer.style.left = "-9999px";
-      ytContainer.style.top = "-9999px";
-      ytContainer.style.opacity = "0";
-      ytContainer.style.pointerEvents = "none";
-      ytContainer.innerHTML = '<div id="yt-player-target"></div>';
-      document.body.appendChild(ytContainer);
+    } else {
+      this.audioElement.volume = this.volume / 100;
     }
 
-    // Load YouTube API script
-    if (!window.YT) {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName("script")[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    }
+    this.audioElement.addEventListener("play", () => {
+      this.isPlaying = true;
+      this.updateUIState(true);
+    });
 
-    // YouTube API callback
-    window.onYouTubeIframeAPIReady = () => {
-      this.ytPlayer = new window.YT.Player("yt-player-target", {
-        height: "1",
-        width: "1",
-        videoId: "g4yM1h-b4lI", // Hans Zimmer & Lorne Balfe - Arena of Valor Main Theme
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          loop: 1,
-          playlist: "g4yM1h-b4lI",
-          modestbranding: 1,
-          playsinline: 1,
-        },
-        events: {
-          onReady: (event) => {
-            this.isYtReady = true;
-            event.target.setVolume(this.volume);
-          },
-          onStateChange: (event) => {
-            if (event.data === window.YT.PlayerState.PLAYING) {
-              this.isPlaying = true;
-              this.updateUIState(true);
-            } else if (
-              event.data === window.YT.PlayerState.PAUSED ||
-              event.data === window.YT.PlayerState.ENDED
-            ) {
-              this.isPlaying = false;
-              this.updateUIState(false);
-            }
-          },
-        },
-      });
-    };
+    this.audioElement.addEventListener("pause", () => {
+      this.isPlaying = false;
+      this.updateUIState(false);
+    });
   }
 
   initUI() {
@@ -270,15 +224,20 @@ class BGMController {
     }
 
     if (this.btnToggle) {
-      this.btnToggle.addEventListener("click", () => {
+      this.btnToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
         this.togglePlay();
       });
     }
 
-    // Auto-resume on first user click if preferred
-    document.addEventListener("click", () => {
+    // Auto-resume audio on first user click anywhere if desired
+    const handleFirstGesture = () => {
       if (window.sounds) window.sounds._init();
-    }, { once: true });
+      document.removeEventListener("click", handleFirstGesture);
+      document.removeEventListener("keydown", handleFirstGesture);
+    };
+    document.addEventListener("click", handleFirstGesture, { once: true });
+    document.addEventListener("keydown", handleFirstGesture, { once: true });
   }
 
   togglePlay() {
@@ -290,42 +249,30 @@ class BGMController {
   }
 
   play() {
-    if (this.isYtReady && this.ytPlayer && typeof this.ytPlayer.playVideo === "function") {
-      try {
-        this.ytPlayer.setVolume(this.volume);
-        this.ytPlayer.playVideo();
-        this.isPlaying = true;
-        this.updateUIState(true);
-        return;
-      } catch (e) {
-        console.warn("YouTube play fallback:", e);
-      }
-    }
+    if (window.sounds) window.sounds._init();
 
-    // Fallback to local / HTML5 audio
     if (this.audioElement) {
-      this.audioElement.play().then(() => {
-        this.isPlaying = true;
-        this.updateUIState(true);
-      }).catch((e) => {
-        console.log("Audio waiting for user gesture:", e);
-      });
+      this.audioElement.volume = this.volume / 100;
+      const playPromise = this.audioElement.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            this.isPlaying = true;
+            this.updateUIState(true);
+          })
+          .catch((err) => {
+            console.warn("BGM autoplay blocked by browser policy, click required:", err);
+            this.isPlaying = false;
+            this.updateUIState(false);
+          });
+      }
     }
   }
 
   pause() {
-    if (this.isYtReady && this.ytPlayer && typeof this.ytPlayer.pauseVideo === "function") {
-      try {
-        this.ytPlayer.pauseVideo();
-      } catch (e) {
-        console.warn("YouTube pause fallback:", e);
-      }
-    }
-
     if (this.audioElement) {
       this.audioElement.pause();
     }
-
     this.isPlaying = false;
     this.updateUIState(false);
   }
@@ -334,9 +281,6 @@ class BGMController {
     this.volume = Math.max(0, Math.min(100, vol));
     localStorage.setItem("aov_bgm_vol", this.volume.toString());
 
-    if (this.isYtReady && this.ytPlayer && typeof this.ytPlayer.setVolume === "function") {
-      this.ytPlayer.setVolume(this.volume);
-    }
     if (this.audioElement) {
       this.audioElement.volume = this.volume / 100;
     }
@@ -347,7 +291,7 @@ class BGMController {
       this.btnToggle.classList.toggle("is-playing", playing);
     }
     if (this.labelEl) {
-      this.labelEl.textContent = playing ? "NHẠC NỀN: ĐANG PHÁT" : "NHẠC NỀN: TẠM DỪNG";
+      this.labelEl.textContent = playing ? "NHẠC NỀN: ĐANG PHÁT" : "BẬT NHẠC NỀN";
     }
     if (this.eqVisualizer) {
       this.eqVisualizer.classList.toggle("active", playing);
