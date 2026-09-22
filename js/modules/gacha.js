@@ -274,6 +274,20 @@ class GachaManager {
 
     this.saveToArchive(rollResults, hasTamyn || hasSPlus);
     this.renderArchiveList();
+
+    // Make landed slot cards interactive and clickable
+    rollResults.forEach((r, idx) => {
+      const slotEl = document.getElementById(`reel-slot-${idx}`);
+      if (slotEl) {
+        slotEl.style.cursor = "pointer";
+        slotEl.title = `Nhấp để xem chi tiết & bộ chiêu thức của ${r.hero.name}`;
+        slotEl.onclick = () => {
+          if (!this.isRolling && typeof showHeroDetail === "function") {
+            showHeroDetail(r.hero);
+          }
+        };
+      }
+    });
   }
 
   saveToArchive(rollResults, isSpecial) {
@@ -342,7 +356,7 @@ class GachaManager {
         .map((h) => {
           const tier = TIERS[h.tier] || TIERS["A"];
           return `
-            <div class="archive-hero-chip" title="${h.name} (${h.laneName})">
+            <div class="archive-hero-chip" data-hero-id="${h.id}" title="Nhấp để xem chi tiết & kỹ năng của ${h.name} (${h.laneName})">
               <img src="${h.avatar}" alt="${h.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
               <span class="chip-lane">${h.laneName}</span>
               <span class="chip-name">${h.name}</span>
@@ -361,6 +375,18 @@ class GachaManager {
           ${heroesHtml}
         </div>
       `;
+
+      card.querySelectorAll(".archive-hero-chip").forEach((chip) => {
+        chip.style.cursor = "pointer";
+        chip.addEventListener("click", () => {
+          const heroId = chip.getAttribute("data-hero-id");
+          const targetHero = HEROES_DATABASE.find((h) => h.id === heroId);
+          if (targetHero && typeof showHeroDetail === "function") {
+            showHeroDetail(targetHero);
+          }
+        });
+      });
+
       this.archiveContainer.appendChild(card);
     });
   }
