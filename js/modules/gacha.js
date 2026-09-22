@@ -20,6 +20,8 @@ class GachaManager {
   initElements() {
     this.modeButtons = document.querySelectorAll(".mode-btn");
     this.laneSelect1 = document.getElementById("gacha-lane-select-1");
+    this.customLanesPanel = document.getElementById("gacha-custom-lanes");
+    this.laneCheckboxes = document.querySelectorAll(".lane-chk");
     this.reelsContainer = document.getElementById("gacha-reels-container");
     this.btnRoll = document.getElementById("btn-roll-gacha");
     this.archiveContainer = document.getElementById("gacha-archive-list");
@@ -48,6 +50,17 @@ class GachaManager {
       });
     }
 
+    this.laneCheckboxes.forEach((chk) => {
+      chk.addEventListener("change", () => {
+        if (this.isRolling) return;
+        if (typeof sounds !== "undefined") sounds.playClick();
+        if (this.currentMode === "custom") {
+          this.updateActiveLanes();
+          this.renderReels();
+        }
+      });
+    });
+
     if (this.btnRoll) {
       this.btnRoll.addEventListener("click", () => this.startRoll());
     }
@@ -67,8 +80,16 @@ class GachaManager {
     if (this.laneSelect1) {
       this.laneSelect1.style.display = this.currentMode === "1" ? "inline-block" : "none";
     }
+    if (this.customLanesPanel) {
+      this.customLanesPanel.style.display = this.currentMode === "custom" ? "flex" : "none";
+    }
 
-    if (this.currentMode === "1") {
+    if (this.currentMode === "custom") {
+      const checked = Array.from(this.laneCheckboxes)
+        .filter((chk) => chk.checked)
+        .map((chk) => chk.value);
+      this.activeLanes = checked.length > 0 ? checked : ["top"];
+    } else if (this.currentMode === "1") {
       this.activeLanes = [this.selectedLaneFor1 === "all" ? "top" : this.selectedLaneFor1];
     } else if (this.currentMode === "2") {
       this.activeLanes = ["ad", "sp"]; // Cặp Bot

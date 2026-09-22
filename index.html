@@ -94,6 +94,7 @@
               <button class="mode-btn" data-mode="3">TRIO MID - RỪNG - SUP</button>
               <button class="mode-btn" data-mode="2">BOT DUO AD - SUP</button>
               <button class="mode-btn" data-mode="1">QUAY 1 TƯỚNG</button>
+              <button class="mode-btn" data-mode="custom">TỰ CHỌN ĐƯỜNG (MULTI-LANE)</button>
               <select class="lane-select-inline" id="gacha-lane-select-1" style="display: none;">
                 <option value="all">NGẪU NHIÊN ĐƯỜNG</option>
                 <option value="top">ĐƯỜNG CAESAR (TOP)</option>
@@ -102,6 +103,33 @@
                 <option value="ad">ĐƯỜNG RỒNG (AD)</option>
                 <option value="sp">TRỢ THỦ (SUPPORT)</option>
               </select>
+            </div>
+
+            <!-- Custom Multi-Lane Checkbox Selection -->
+            <div class="custom-lanes-panel" id="gacha-custom-lanes" style="display: none;">
+              <span class="custom-lanes-guide">Tick chọn các đường bạn muốn quay đồng thời:</span>
+              <div class="custom-lanes-chips">
+                <label class="custom-lane-chip">
+                  <input type="checkbox" class="lane-chk" value="top" checked />
+                  <span class="chip-ui"><span class="chip-marker">✓</span> CAESAR (TOP)</span>
+                </label>
+                <label class="custom-lane-chip">
+                  <input type="checkbox" class="lane-chk" value="jungle" checked />
+                  <span class="chip-ui"><span class="chip-marker">✓</span> RỪNG (JGL)</span>
+                </label>
+                <label class="custom-lane-chip">
+                  <input type="checkbox" class="lane-chk" value="mid" checked />
+                  <span class="chip-ui"><span class="chip-marker">✓</span> ĐƯỜNG GIỮA (MID)</span>
+                </label>
+                <label class="custom-lane-chip">
+                  <input type="checkbox" class="lane-chk" value="ad" checked />
+                  <span class="chip-ui"><span class="chip-marker">✓</span> XẠ THỦ (ADC)</span>
+                </label>
+                <label class="custom-lane-chip">
+                  <input type="checkbox" class="lane-chk" value="sp" checked />
+                  <span class="chip-ui"><span class="chip-marker">✓</span> TRỢ THỦ (SUP)</span>
+                </label>
+              </div>
             </div>
 
             <button class="btn-big-roll" id="btn-roll-gacha">
