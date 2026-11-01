@@ -83,75 +83,119 @@ function initLanguageSwitch() {
 
 function initHeroCatalog() {
   const container = document.getElementById("catalog-grid");
+  const countEl = document.getElementById("catalog-count");
   const searchInput = document.getElementById("catalog-search");
-  const roleButtons = document.querySelectorAll(".catalog-filter-btn");
+  const laneButtons = document.querySelectorAll(".catalog-filter-btn");
   if (!container) return;
 
-  function render(filterLane = "all", search = "") {
-    container.innerHTML = "";
-    const filtered = HEROES_DATABASE.filter((h) => {
-      const matchSearch =
-        !search ||
-        h.name.toLowerCase().includes(search.toLowerCase()) ||
-        h.id.toLowerCase().includes(search.toLowerCase());
-      const matchLane =
-        filterLane === "all" || h.lane === filterLane || h.secondary_lane === filterLane;
+  let laneFilter = "all";
+
+  function render() {
+    const search = (searchInput?.value || "").trim().toLowerCase();
+    const heroes = HEROES_DATABASE.filter((h) => {
+      const matchSearch = !search || h.name.toLowerCase().includes(search) || h.id.toLowerCase().includes(search);
+      const matchLane = laneFilter === "all" || h.lane === laneFilter || h.secondary_lane === laneFilter;
       return matchSearch && matchLane;
-    });
+    }).sort(compareHeroes);
 
-    filtered.forEach((h) => {
-      const tier = TIERS[h.tier] || TIERS["A"];
-      const lane = LANES[h.lane];
-      const card = document.createElement("div");
-      card.className = `catalog-card tier-${h.tier.replace("+", "-plus")}`;
-      card.innerHTML = `
-        <div class="catalog-avatar">
-          <img src="${h.avatar}" alt="${h.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-          <span class="catalog-tier" style="background:${tier.color}">${h.tier}</span>
-          <span class="catalog-lane" style="background:${lane?.color || "#666"}">${lane?.shortName || ""}</span>
-        </div>
-        <div class="catalog-info">
-          <div class="catalog-name">${h.name}</div>
-          <div class="catalog-role">${h.roles.join(", ")}</div>
-        </div>
-      `;
-      card.addEventListener("click", () => {
-        showHeroDetail(h);
-      });
-      container.appendChild(card);
-    });
+    if (countEl) countEl.textContent = t("catalog.count", { n: heroes.length });
+
+    if (heroes.length === 0) {
+      container.innerHTML = `<p class="grid-empty">${t("catalog.empty")}</p>`;
+      return;
+    }
+
+    container.innerHTML = heroes
+      .map((h) => `
+        <button class="catalog-card" data-hero-id="${h.id}" aria-label="${t("catalog.open", { name: h.name })}">
+          ${heroImage(h, "catalog-img")}
+          ${tierMedal(h.tier)}
+          <span class="catalog-lane">${LANE_ICONS[h.lane] || ""}</span>
+          <span class="catalog-info">
+            <span class="catalog-name">${h.name}</span>
+            <span class="catalog-role">${h.roles.map(roleName).join(", ")}</span>
+          </span>
+        </button>
+      `)
+      .join("");
   }
 
-  render();
+  container.addEventListener("click", (e) => {
+    const card = e.target.closest(".catalog-card");
+    if (card) showHeroDetail(findHero(card.dataset.heroId));
+  });
 
-  if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      const activeBtn = document.querySelector(".catalog-filter-btn.active");
-      render(activeBtn?.dataset.lane || "all", e.target.value.trim());
-    });
-  }
+  searchInput?.addEventListener("input", render);
 
-  roleButtons.forEach((btn) => {
+  laneButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       if (typeof sounds !== "undefined") sounds.playClick();
-      roleButtons.forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      render(btn.dataset.lane, searchInput?.value.trim() || "");
+      laneFilter = btn.dataset.lane;
+      laneButtons.forEach((b) => {
+        b.classList.toggle("active", b === btn);
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+      render();
     });
   });
+
+  document.addEventListener("aov:langchange", render);
+  render();
 }
 
 function initHeroDetailModal() {
   const modal = document.getElementById("hero-detail-modal");
-  const closeBtn = document.getElementById("detail-modal-close");
+  const content = document.getElementById("hero-detail-content");
   if (!modal) return;
 
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => modal.classList.remove("open"));
-  }
+  document.getElementById("detail-modal-close")?.addEventListener("click", () => modal.close());
+
+  // A click on the backdrop lands on the dialog element itself
   modal.addEventListener("click", (e) => {
-    if (e.target === modal) modal.classList.remove("open");
+    if (e.target === modal) modal.close();
   });
+
+  content?.addEventListener("click", (e) => {
+    const chip = e.target.closest(".clickable-chip");
+    if (chip) showHeroDetail(findHero(chip.dataset.heroId));
+  });
+
+  document.addEventListener("aov:langchange", () => {
+    if (modal.open && modal.dataset.heroId) showHeroDetail(findHero(modal.dataset.heroId));
+  });
+}
+
+function skillTypeLabel(type) {
+  const isUlt = /Chiêu cuối/.test(type);
+  const base = type.replace(/\s*\(Chiêu cuối\)/, "");
+  if (currentLang === "vi") return base;
+  if (isUlt) return t("skill.ult");
+  return base.replace("Nội tại", "Passive").replace("Chiêu", "Skill");
+}
+
+function skillPanelHtml(skill) {
+  const description = (skill.description || t("detail.noDesc")).replace(/\n/g, "<br/>");
+  return `
+    <div class="skill-head">
+      <span class="skill-type">${skillTypeLabel(skill.type)}</span>
+      <h3 class="skill-name">${skill.name}</h3>
+    </div>
+    <div class="skill-desc" lang="vi">${description}</div>
+  `;
+}
+
+function heroChipsHtml(ids, fallback, tone) {
+  const chips = (ids || [])
+    .map(findHero)
+    .filter(Boolean)
+    .map((c) => `
+      <button class="hero-chip clickable-chip tone-${tone}" data-hero-id="${c.id}">
+        ${heroImage(c, "hero-chip-img")}
+        <span>${c.name}</span>
+      </button>
+    `)
+    .join("");
+  return chips || `<span class="chips-fallback">${fallback}</span>`;
 }
 
 function showHeroDetail(hero) {
@@ -161,159 +205,105 @@ function showHeroDetail(hero) {
   const contentEl = document.getElementById("hero-detail-content");
   if (!modal || !contentEl) return;
 
-  const tier = TIERS[hero.tier] || TIERS["A"];
-  const lane = LANES[hero.lane];
   const skills = hero.skills || [];
+  const dmgKey = hero.damage_type === "magic" ? "magic" : hero.damage_type === "true_damage" ? "true" : "physical";
+  const mobility = hero.mobility || 50;
+  const cc = hero.cc_rating || 50;
+  const note = t("detail.dataNote");
 
-  // Interactive skills section markup
-  let skillsHtml = "";
-  if (skills.length > 0) {
-    const iconsMarkup = skills.map((sk, idx) => `
-      <button class="skill-circle-btn ${idx === 0 ? 'active' : ''}" data-skill-idx="${idx}" title="${sk.type}: ${sk.name}">
-        <div class="skill-circle-img-wrap">
-          <img src="${sk.icon_url}" alt="${sk.name}" onerror="this.src='${hero.avatar}'" />
+  const skillsHtml = skills.length
+    ? `
+      <section class="detail-skills">
+        <h3 class="detail-heading">${t("detail.skills")}</h3>
+        <div class="skill-tabs" role="group" aria-label="${t("detail.skills")}">
+          ${skills.map((sk, idx) => `
+            <button class="skill-tab ${idx === 0 ? "active" : ""}" data-skill-idx="${idx}" aria-pressed="${idx === 0}">
+              <img class="hero-img skill-icon" src="${sk.icon_url}" alt="" data-initial="${idx + 1}" />
+              <span class="skill-tab-label">${skillTypeLabel(sk.type)}</span>
+            </button>
+          `).join("")}
         </div>
-        <span class="skill-circle-label">${sk.type.replace(' (Chiêu cuối)', '')}</span>
-      </button>
-    `).join("");
-
-    const initialSkill = skills[0];
-    skillsHtml = `
-      <div class="hero-skills-block">
-        <div class="skills-block-header">
-          <div class="skills-block-title">
-            <span class="skills-spark-icon">⚡</span>
-            <span>BỘ KỸ NĂNG CHIẾN ĐẤU (${skills.length} KỸ NĂNG)</span>
-          </div>
-          <span class="skills-instruction">Nhấp từng chiêu để xem cơ chế & thông số chi tiết</span>
-        </div>
-        
-        <div class="skills-circle-bar" id="detail-skills-bar">
-          ${iconsMarkup}
-        </div>
-
-        <div class="skill-card-preview" id="detail-skill-preview">
-          <div class="skill-preview-header">
-            <span class="skill-preview-type">${initialSkill.type}</span>
-            <h3 class="skill-preview-name">${initialSkill.name}</h3>
-          </div>
-          <div class="skill-preview-desc">${(initialSkill.description || 'Chưa có mô tả chi tiết.').replace(/\n/g, '<br/>')}</div>
-        </div>
-      </div>
-    `;
-  }
+        <div class="skill-panel" id="detail-skill-preview" aria-live="polite">${skillPanelHtml(skills[0])}</div>
+      </section>
+    `
+    : "";
 
   contentEl.innerHTML = `
-    <div class="detail-header">
-      <div class="detail-avatar-wrap">
-        <img src="${hero.avatar}" alt="${hero.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-        <span class="detail-tier-badge" style="background:${tier.color}">${hero.tier} TIER</span>
+    <header class="detail-header">
+      <div class="detail-portrait">
+        ${heroImage(hero, "detail-img")}
+        ${tierMedal(hero.tier)}
       </div>
       <div class="detail-meta">
-        <h2>${hero.name}</h2>
-        <div class="detail-tags">
-          <span class="tag-lane" style="background:${lane?.color}">${lane?.name || ""}</span>
-          <span class="tag-role">${hero.roles.join(" • ")}</span>
-          ${hero.damage_type ? `<span class="tag-dmg">${hero.damage_type === 'physical' ? 'Sát thương Vật lý' : hero.damage_type === 'magic' ? 'Sát thương Phép' : 'Sát thương Chuẩn'}</span>` : ''}
-        </div>
-        <div class="detail-stat-meters">
-          <div class="stat-meter-item" title="Độ cơ động: ${hero.mobility || 50}/100">
-            <span class="stat-label">Cơ động:</span>
-            <div class="stat-meter-bar"><div class="stat-meter-fill fill-blue" style="width: ${hero.mobility || 50}%"></div></div>
-            <span class="stat-val">${hero.mobility || 50}</span>
+        <h2 id="detail-hero-name">${hero.name}</h2>
+        <p class="detail-tags">
+          <span class="detail-lane">${LANE_ICONS[hero.lane] || ""}${laneName(hero.lane)}</span>
+          <span>${hero.roles.map(roleName).join(", ")}</span>
+          <span>${t(`dmg.${dmgKey}`)}</span>
+        </p>
+        <div class="detail-meters">
+          <div class="metric-row">
+            <span class="m-label">${t("detail.mobility")}</span>
+            <div class="m-bar"><div class="m-fill meter-gilt" style="width:${mobility}%"></div></div>
+            <span class="m-val">${mobility}</span>
           </div>
-          <div class="stat-meter-item" title="Khống chế: ${hero.cc_rating || 50}/100">
-            <span class="stat-label">Khống chế:</span>
-            <div class="stat-meter-bar"><div class="stat-meter-fill fill-gold" style="width: ${hero.cc_rating || 50}%"></div></div>
-            <span class="stat-val">${hero.cc_rating || 50}</span>
+          <div class="metric-row">
+            <span class="m-label">${t("detail.cc")}</span>
+            <div class="m-bar"><div class="m-fill meter-gilt" style="width:${cc}%"></div></div>
+            <span class="m-val">${cc}</span>
           </div>
         </div>
-        <p class="detail-strengths"><strong>Điểm mạnh:</strong> ${hero.strengths}</p>
-        <p class="detail-weaknesses"><strong>Điểm yếu:</strong> ${hero.weaknesses}</p>
       </div>
+    </header>
+
+    ${note ? `<p class="detail-note">${note}</p>` : ""}
+
+    <div class="detail-prose" lang="vi">
+      <p><strong>${t("detail.strengths")}:</strong> ${hero.strengths}</p>
+      <p><strong>${t("detail.weaknesses")}:</strong> ${hero.weaknesses}</p>
     </div>
 
     ${skillsHtml}
 
-    <div class="detail-sections">
-      <div class="detail-box">
-        <h3>TƯỚNG KHẮC CHẾ ĐƯỢC</h3>
-        <div class="chips-container">${(hero.counters || []).map((id) => {
-          const c = HEROES_DATABASE.find((h) => h.id === id);
-          return c ? `<span class="badge-chip win-chip clickable-chip" data-hero-id="${id}">${c.name}</span>` : "";
-        }).join(" ") || "Đa dụng trong nhiều kèo đấu"}</div>
+    <section class="detail-relations">
+      <div>
+        <h3 class="detail-heading">${t("detail.counters")}</h3>
+        <div class="hero-chips">${heroChipsHtml(hero.counters, t("detail.noCounters"), "win")}</div>
       </div>
+      <div>
+        <h3 class="detail-heading">${t("detail.counteredBy")}</h3>
+        <div class="hero-chips">${heroChipsHtml(hero.countered_by, t("detail.noCounteredBy"), "lose")}</div>
+      </div>
+      <div>
+        <h3 class="detail-heading">${t("detail.synergies")}</h3>
+        <div class="hero-chips">${heroChipsHtml(hero.synergies, t("detail.noSynergies"), "syn")}</div>
+      </div>
+    </section>
 
-      <div class="detail-box">
-        <h3>BỊ KHẮC CHẾ BỞI</h3>
-        <div class="chips-container">${(hero.countered_by || []).map((id) => {
-          const c = HEROES_DATABASE.find((h) => h.id === id);
-          return c ? `<span class="badge-chip lose-chip clickable-chip" data-hero-id="${id}">${c.name}</span>` : "";
-        }).join(" ") || "Ít bị khắc chế cứng"}</div>
-      </div>
-
-      <div class="detail-box">
-        <h3>TƯỚNG KẾT HỢP TỐT (SYNERGY)</h3>
-        <div class="chips-container">${(hero.synergies || []).map((id) => {
-          const c = HEROES_DATABASE.find((h) => h.id === id);
-          return c ? `<span class="badge-chip syn-chip clickable-chip" data-hero-id="${id}">${c.name}</span>` : "";
-        }).join(" ") || "Phù hợp nhiều đội hình"}</div>
-      </div>
-
-      <div class="detail-box full-width">
-        <h3>MẸO CHIẾN THUẬT & TRANG BỊ KHẮC CHẾ</h3>
-        <p>${hero.counter_tips || "Chú ý kiểm soát bản đồ và giữ vị trí an toàn."}</p>
-        ${(hero.counter_items && hero.counter_items.length > 0) ? `
-          <div class="counter-items-row">
-            <span class="items-label">Trang bị khuyên dùng:</span>
-            ${hero.counter_items.map(it => `<span class="item-pill">${it}</span>`).join(" ")}
-          </div>
-        ` : ''}
-      </div>
-    </div>
+    <section class="detail-tips">
+      <h3 class="detail-heading">${t("detail.tips")}</h3>
+      <p lang="vi">${hero.counter_tips || t("detail.noTips")}</p>
+      ${hero.counter_items?.length ? `
+        <p class="row-items"><strong>${t("detail.itemsLabel")}:</strong> ${hero.counter_items.map((it) => `<span class="item-pill">${it}</span>`).join(" ")}</p>
+      ` : ""}
+    </section>
   `;
 
-  // Attach interactive switch logic to skill circles
-  if (skills.length > 0) {
-    const bar = contentEl.querySelector("#detail-skills-bar");
-    const preview = contentEl.querySelector("#detail-skill-preview");
-    if (bar && preview) {
-      const btns = bar.querySelectorAll(".skill-circle-btn");
-      btns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          btns.forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
-          if (typeof sounds !== "undefined") sounds.playClick();
-          const idx = parseInt(btn.getAttribute("data-skill-idx"), 10);
-          const sk = skills[idx];
-          if (sk) {
-            preview.style.opacity = "0.3";
-            preview.style.transform = "translateY(3px)";
-            setTimeout(() => {
-              preview.innerHTML = `
-                <div class="skill-preview-header">
-                  <span class="skill-preview-type">${sk.type}</span>
-                  <h3 class="skill-preview-name">${sk.name}</h3>
-                </div>
-                <div class="skill-preview-desc">${(sk.description || 'Chưa có mô tả chi tiết.').replace(/\n/g, '<br/>')}</div>
-              `;
-              preview.style.opacity = "1";
-              preview.style.transform = "translateY(0)";
-            }, 100);
-          }
-        });
+  const preview = contentEl.querySelector("#detail-skill-preview");
+  const tabs = contentEl.querySelectorAll(".skill-tab");
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((other) => {
+        other.classList.toggle("active", other === tab);
+        other.setAttribute("aria-pressed", String(other === tab));
       });
-    }
-  }
-
-  // Allow clicking on counter / synergy chips inside modal to navigate to that hero
-  contentEl.querySelectorAll(".clickable-chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      const targetId = chip.getAttribute("data-hero-id");
-      const targetHero = HEROES_DATABASE.find((h) => h.id === targetId);
-      if (targetHero) showHeroDetail(targetHero);
+      if (typeof sounds !== "undefined") sounds.playClick();
+      const skill = skills[Number(tab.dataset.skillIdx)];
+      if (skill && preview) preview.innerHTML = skillPanelHtml(skill);
     });
   });
 
-  modal.classList.add("open");
+  modal.dataset.heroId = hero.id;
+  if (!modal.open) modal.showModal();
+  modal.scrollTop = 0;
 }

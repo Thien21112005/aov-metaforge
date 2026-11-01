@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="css/style.css?v=3.0">
   <link rel="stylesheet" href="css/gacha.css?v=3.0">
   <link rel="stylesheet" href="css/draft.css?v=3.0">
-  <link rel="stylesheet" href="css/legacy.css?v=3.0">
+  <link rel="stylesheet" href="css/catalog.css?v=3.0">
   
   <!-- GSAP Animation Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -219,43 +219,34 @@
       </section>
 
       <!-- ===================================================
-           TAB 3: HERO COMPENDIUM (129 VỊ TƯỚNG)
+           TAB 3: HERO COMPENDIUM
            =================================================== -->
       <section id="tab-catalog" class="tab-panel">
-        <div class="catalog-header-bar">
-          <input type="text" id="catalog-search" class="catalog-search-input" placeholder="Tìm kiếm tướng (Tamyn, Florentino, Astrid, Butterfly, Nakroth...)" />
-          <div class="catalog-filters">
-            <button class="catalog-filter-btn active" data-lane="all">TẤT CẢ</button>
-            <button class="catalog-filter-btn" data-lane="top">TOP</button>
-            <button class="catalog-filter-btn" data-lane="jungle">RỪNG</button>
-            <button class="catalog-filter-btn" data-lane="mid">MID</button>
-            <button class="catalog-filter-btn" data-lane="ad">AD</button>
-            <button class="catalog-filter-btn" data-lane="sp">SUP</button>
+        <div class="catalog-bar">
+          <input type="text" id="catalog-search" class="text-input" data-i18n-placeholder="catalog.search" data-i18n-label="catalog.search" />
+          <div class="seg lane-filters" role="group" data-i18n-label="filter.label">
+            <button class="seg-btn catalog-filter-btn active" data-lane="all" aria-pressed="true" data-i18n="filter.all">Tất cả</button>
+            <button class="seg-btn catalog-filter-btn" data-lane="top" aria-pressed="false" data-i18n="short.top">Top</button>
+            <button class="seg-btn catalog-filter-btn" data-lane="jungle" aria-pressed="false" data-i18n="short.jungle">Rừng</button>
+            <button class="seg-btn catalog-filter-btn" data-lane="mid" aria-pressed="false" data-i18n="short.mid">Mid</button>
+            <button class="seg-btn catalog-filter-btn" data-lane="ad" aria-pressed="false" data-i18n="short.ad">AD</button>
+            <button class="seg-btn catalog-filter-btn" data-lane="sp" aria-pressed="false" data-i18n="short.sp">SP</button>
           </div>
+          <span class="catalog-count" id="catalog-count" aria-live="polite"></span>
         </div>
-
-        <div class="catalog-grid" id="catalog-grid">
-          <!-- Dynamically populated by app.js -->
-        </div>
+        <div class="catalog-grid" id="catalog-grid"></div>
       </section>
 
     </main>
   </div>
 
-  <!-- ===================================================
-       MODAL: HERO DETAIL
-       =================================================== -->
-  <div class="modal-overlay" id="hero-detail-modal">
-    <div class="modal-content modal-detail-box">
-      <div class="modal-header">
-        <h3>THÔNG SỐ CHIẾN THUẬT & KHẮC CHẾ</h3>
-        <button class="modal-close-btn" id="detail-modal-close">&times;</button>
-      </div>
-      <div class="modal-body" id="hero-detail-content">
-        <!-- Populated dynamically -->
-      </div>
-    </div>
-  </div>
+  <!-- HERO DETAIL -->
+  <dialog class="hero-dialog" id="hero-detail-modal" aria-labelledby="detail-hero-name">
+    <button class="ctl-btn dialog-close" id="detail-modal-close" data-i18n-label="ctl.close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div id="hero-detail-content"></div>
+  </dialog>
 
   <!-- NATIVE BGM AUDIO ELEMENT -->
   <audio id="aov-bgm-audio" loop preload="auto">

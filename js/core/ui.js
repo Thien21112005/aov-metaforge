@@ -39,6 +39,13 @@ function findHero(id) {
   return HEROES_DATABASE.find((h) => h.id === id) || null;
 }
 
+const TIER_ORDER = { "S+": 0, S: 1, A: 2, B: 3 };
+
+/** Strongest first, then by name, in every hero grid. */
+function compareHeroes(a, b) {
+  return (TIER_ORDER[a.tier] ?? 9) - (TIER_ORDER[b.tier] ?? 9) || a.name.localeCompare(b.name);
+}
+
 /* A portrait that fails to load becomes the hero's initial on the same tile */
 window.addEventListener(
   "error",
