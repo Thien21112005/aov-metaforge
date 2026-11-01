@@ -5,74 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AOV MetaForge - Hệ Thống Cấm Chọn Snake Draft & Gacha Đội Hình Liên Quân</title>
   
-  <!-- Google Fonts: Outfit (Esports Headings) & Be Vietnam Pro (Vietnamese Precision) -->
+  <!-- Google Fonts: Saira Condensed (names, numerals) & Be Vietnam Pro (reading); both cover Vietnamese -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Saira+Condensed:wght@500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="assets/images/aov_metaforge_logo.png">
   
   <!-- Stylesheet (Anti-Cache) -->
-  <link rel="stylesheet" href="css/style.css?v=2.4">
+  <link rel="stylesheet" href="css/style.css?v=3.0">
+  <link rel="stylesheet" href="css/legacy.css?v=3.0">
   
   <!-- GSAP Animation Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
 
-  <!-- Ambient Cinematic Stage Background & Particles Canvas -->
-  <div class="stage-bg-backdrop"></div>
-  <canvas id="ambient-particles-canvas" class="ambient-canvas"></canvas>
-
   <div class="app-wrapper">
-    <!-- APP HEADER: MODERN SQUIRCLE GLASS NAVBAR -->
     <header class="app-header">
       <div class="brand-area">
         <div class="brand-logo-frame">
-          <img src="assets/images/aov_metaforge_logo.png" alt="AOV MetaForge Logo" class="brand-logo" />
+          <img src="assets/images/aov_metaforge_logo.png" alt="" class="brand-logo" />
         </div>
-        <div class="brand-text-group">
-          <h1 class="brand-title">AOV METAFORGE</h1>
-          <p class="brand-subtitle">Hệ Thống Cấm Chọn Snake Draft & Gacha Đội Hình Chuẩn Meta</p>
-        </div>
+        <h1 class="brand-title">AOV METAFORGE</h1>
       </div>
 
-      <!-- Navigation Tabs -->
       <nav class="nav-tabs">
-        <button class="nav-tab active" data-target="tab-gacha">
-          <span class="nav-indicator"></span>
-          GACHA DRAFT
-        </button>
-        <button class="nav-tab" data-target="tab-banpick">
-          <span class="nav-indicator"></span>
-          TOURNAMENT BAN/PICK
-        </button>
-        <button class="nav-tab" data-target="tab-catalog">
-          <span class="nav-indicator"></span>
-          HERO COMPENDIUM (129)
-        </button>
+        <button class="nav-tab active" data-target="tab-gacha">GACHA DRAFT</button>
+        <button class="nav-tab" data-target="tab-banpick">TOURNAMENT BAN/PICK</button>
+        <button class="nav-tab" data-target="tab-catalog">HERO COMPENDIUM (129)</button>
       </nav>
 
       <div class="header-actions">
-        <!-- BGM Player Widget -->
         <div class="bgm-player-widget" id="bgm-player-widget">
-          <button class="btn-bgm-toggle" id="btn-bgm-toggle" title="Phát/Tạm dừng nhạc nền Liên Quân (Hans Zimmer Theme)">
+          <button class="ctl-btn" id="btn-bgm-toggle" title="Phát/Tạm dừng nhạc nền">
             <span class="bgm-eq" id="bgm-eq-visualizer">
               <span class="eq-bar"></span>
               <span class="eq-bar"></span>
               <span class="eq-bar"></span>
             </span>
-            <span class="bgm-text" id="bgm-status-label">BẬT NHẠC NỀN</span>
+            <span class="bgm-text" id="bgm-status-label">Nhạc nền</span>
           </button>
-          <div class="bgm-volume-box">
-            <input type="range" id="bgm-volume-slider" class="bgm-slider" min="0" max="100" value="35" title="Âm lượng nhạc nền" />
-          </div>
+          <input type="range" id="bgm-volume-slider" class="bgm-slider" min="0" max="100" value="35" aria-label="Âm lượng nhạc nền" />
         </div>
-
-        <button class="btn-icon-pill" id="btn-toggle-sound" title="Bật/Tắt hiệu ứng âm thanh">
-          <span class="sound-dot"></span> SFX ON
-        </button>
+        <button class="ctl-btn is-on" id="btn-toggle-sound" title="Bật/Tắt hiệu ứng âm thanh">Âm thanh</button>
       </div>
     </header>
 
@@ -349,11 +326,11 @@
   </audio>
 
   <!-- SCRIPTS -->
-  <script src="js/core/data.js?v=2.4"></script>
-  <script src="js/core/audio.js?v=2.4"></script>
-  <script src="js/modules/analyzer.js?v=2.4"></script>
-  <script src="js/modules/draft.js?v=2.4"></script>
-  <script src="js/modules/gacha.js?v=2.4"></script>
-  <script src="js/app.js?v=2.4"></script>
+  <script src="js/core/data.js?v=3.0"></script>
+  <script src="js/core/audio.js?v=3.0"></script>
+  <script src="js/modules/analyzer.js?v=3.0"></script>
+  <script src="js/modules/draft.js?v=3.0"></script>
+  <script src="js/modules/gacha.js?v=3.0"></script>
+  <script src="js/app.js?v=3.0"></script>
 </body>
 </html>

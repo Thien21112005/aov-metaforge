@@ -288,10 +288,10 @@ class BGMController {
 
   updateUIState(playing) {
     if (this.btnToggle) {
-      this.btnToggle.classList.toggle("is-playing", playing);
+      this.btnToggle.classList.toggle("is-on", playing);
     }
     if (this.labelEl) {
-      this.labelEl.textContent = playing ? "NHẠC NỀN: ĐANG PHÁT" : "BẬT NHẠC NỀN";
+      this.labelEl.textContent = playing ? "Đang phát" : "Nhạc nền";
     }
     if (this.eqVisualizer) {
       this.eqVisualizer.classList.toggle("active", playing);
