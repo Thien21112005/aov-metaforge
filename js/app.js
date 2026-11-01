@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1. Initialize Core Managers
   window.gachaManager = new GachaManager();
   window.draftManager = new DraftManager();
-  window.bpManager = window.draftManager; // Alias for backward compatibility
 
   // 2. Tab Navigation
   const navTabs = document.querySelectorAll(".nav-tab");
@@ -30,12 +29,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const targetPanel = document.getElementById(tab.dataset.target);
       if (targetPanel) {
         targetPanel.classList.add("active");
-        // Animate entrance if GSAP is loaded
-        if (window.gsap) {
+        document.dispatchEvent(new CustomEvent("aov:tabchange", { detail: { target: tab.dataset.target } }));
+        // A leftover transform would break the fixed hero sheet, so clear it after the fade
+        if (window.gsap && !isReducedMotion()) {
           window.gsap.fromTo(
             targetPanel,
-            { opacity: 0, y: 12 },
-            { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }
+            { opacity: 0, y: 8 },
+            { opacity: 1, y: 0, duration: 0.25, ease: "power2.out", clearProps: "all" }
           );
         }
       }

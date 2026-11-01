@@ -1,6 +1,6 @@
 /**
- * AOV MetaForge - AI Meta & Matchup Counter Reasoning Engine
- * Analyzes team synergies, damage profiles, CC ratings, and tactical counter matchups.
+ * AOV MetaForge - Rule-based matchup and counter analysis
+ * Reads team picks against the counter matrix in data.js.
  */
 
 class MetaAnalyzer {
@@ -8,252 +8,178 @@ class MetaAnalyzer {
     this.lanes = lanes;
   }
 
+  /** Renders the full analysis and returns the short verdicts shown beside the board. */
   update(state, usedIds, containerEl, blueMetricsEl, redMetricsEl) {
-    if (!containerEl) return;
+    if (!containerEl) return [];
 
     const bluePicks = state.blue.picks;
     const redPicks = state.red.picks;
+    const summary = [];
+    let alertsHtml = "";
+    let lanesHtml = "";
+    let suggestionHtml = "";
 
-    let counterCardsHtml = "";
-    let suggestionCardsHtml = "";
-
-    // S+ Tier Tournament Meta Alerts: Tamyn, Butterfly, Astrid
-    const redTamyn = redPicks.find((p) => p.hero?.id === "tamyn");
-    const redBf = redPicks.find((p) => p.hero?.id === "butterfly");
-    const redAstrid = redPicks.find((p) => p.hero?.id === "astrid");
-
-    if (redBf) {
-      counterCardsHtml += `
-        <div class="alert-box alert-butterfly">
-          <div class="alert-tag">CRITICAL THREAT: BUTTERFLY [S+ TIER]</div>
-          <div class="alert-body">
-            <div class="alert-title">ĐỐI THỦ ĐÃ CHỌN BUTTERFLY - SÁT THỦ LIÊN HOÀN</div>
-            <div class="alert-text">
-              Butterfly trong meta hiện tại sở hữu khả năng càn quét cực mạnh nhờ lối lên đồ semi-tank kết hợp cơ chế reset 100% thời gian hồi chiêu khi có điểm hạ gục/phụ tá, đồng thời nhận 35% miễn thương khi kích hoạt chiêu cuối.
-              <br/><strong>Chiến thuật khắc chế:</strong> Bắt buộc đội hình phải có khống chế cứng chỉ định (<strong>Aleister, Arum, Omen, Baldum</strong>) hoặc giải hiệu ứng diện rộng từ <strong>Chaugnar</strong>. Toàn đội hạn chế đứng co cụm khi máu thấp để tránh bị làm mồi reset chiêu. Xạ thủ & Pháp sư cần ưu tiên lên sớm <strong>Quả Cầu Băng Sương</strong> hoặc <strong>Giáp Hộ Mệnh</strong> để ngắt chuỗi lao vào!
-            </div>
-          </div>
-        </div>
+    // Priority threats on the enemy side
+    ["butterfly", "astrid", "tamyn"].forEach((id) => {
+      if (!redPicks.some((p) => p.hero?.id === id)) return;
+      const hero = findHero(id);
+      alertsHtml += `
+        <details class="analysis-row alert-row">
+          <summary>
+            ${heroImage(hero, "row-img")}
+            <span class="row-head"><b>${t(`alert.${id}.tag`)}</b><span>${t(`alert.${id}.short`)}</span></span>
+          </summary>
+          <div class="row-body">${t(`alert.${id}.body`)}</div>
+        </details>
       `;
-    }
+      summary.push({ tone: "alert", title: t(`alert.${id}.tag`), sub: t(`alert.${id}.short`) });
+    });
 
-    if (redAstrid) {
-      counterCardsHtml += `
-        <div class="alert-box alert-astrid">
-          <div class="alert-tag">META UPDATE: ASTRID [S TIER]</div>
-          <div class="alert-body">
-            <div class="alert-title">ĐỐI THỦ ĐÃ CHỌN ASTRID - ĐẤU SĨ BẤT TỬ</div>
-            <div class="alert-text">
-              Astrid vừa được nâng cấp sức mạnh đáng kể tại giải đấu: Chiêu cuối Cự Kiếm duy trì 1.5s miễn nhiễm toàn bộ sát thương và khống chế, chuyển hóa sát thương chuẩn diện rộng khi lượng máu xuống thấp.
-              <br/><strong>Chiến thuật khắc chế:</strong> Triển khai xạ thủ có khả năng thả diều và cấu rỉa sát thương chuẩn theo % máu như <strong>Hayate</strong> hoặc <strong>Slimz</strong>. Khi Astrid vung chiêu cuối bất tử, lập tức dùng chiêu lướt hoặc Tốc Biến tản ra khỏi phạm vi hình nón!
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    if (redTamyn) {
-      counterCardsHtml += `
-        <div class="alert-box alert-tamyn">
-          <div class="alert-tag">TOP S+ PRIORITY: TAMYN</div>
-          <div class="alert-body">
-            <div class="alert-title">ĐỐI THỦ ĐÃ CHỌN TAMYN - SIÊU ĐẤU SĨ TỐC ĐỘ</div>
-            <div class="alert-text">
-              Tamyn sở hữu cơ chế chuyển đổi 100% tốc chạy thành sát thương bộc phát và hồi phục gấp đôi khi đâm trúng mục tiêu. Chiêu cuối tích trữ 4 lần nạp thương tạo áp lực càn quét cực lớn.
-              <br/><strong>Chiến thuật khắc chế:</strong> Bắt buộc triển khai khống chế áp chế hoặc khóa tốc chạy: <strong>Omen</strong> (Sát Vực khóa chặt tốc chạy), <strong>Aleister / Arum</strong> (áp chế không thể giải), <strong>Skud / Baldum</strong>.
-              Tất cả các vị trí đỡ đòn cần lên sớm <strong>Khiên Thất Truyền</strong> và <strong>Áo Choàng Băng Giá</strong> để triệt tiêu tốc độ di chuyển, vô hiệu hóa sát thương đâm của Tamyn!
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // Lane by lane tactical matchup reasoning
     this.lanes.forEach((laneKey, idx) => {
-      const laneInfo = LANES[laneKey];
       const blueH = bluePicks[idx].hero;
       const redH = redPicks[idx].hero;
 
       if (redH && !blueH) {
-        const directCounters = HEROES_DATABASE.filter(
-          (c) =>
-            !usedIds.has(c.id) &&
-            (c.lane === laneKey || c.secondary_lane === laneKey) &&
-            (redH.countered_by?.includes(c.id) || c.counters?.includes(redH.id))
-        );
-
-        const metaAlternates = HEROES_DATABASE.filter(
-          (c) =>
-            !usedIds.has(c.id) &&
-            (c.lane === laneKey || c.secondary_lane === laneKey) &&
-            (c.tier === "S+" || c.tier === "S")
-        );
-
-        const counterList = [...new Set([...directCounters, ...metaAlternates])].slice(0, 4);
-        const counterItemsHtml = (redH.counter_items || ["Khiên Thất Truyền", "Giày Kiên Cường"])
-          .map((item) => `<span class="badge-item">${item}</span>`)
-          .join(" ");
-
-        counterCardsHtml += `
-          <div class="analysis-card enemy-pick-card">
-            <div class="card-lane-badge" style="background:${laneInfo.color}">
-              ${laneInfo.shortName} • ĐỐI THỦ ĐÃ KHÓA
-            </div>
-            
-            <div class="enemy-header">
-              <img class="enemy-avatar" src="${redH.avatar}" alt="${redH.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-              <div class="enemy-info">
-                <div class="enemy-title">Địch: <b>${redH.name}</b> <span class="badge-tier-inline tier-${redH.tier.replace("+", "-plus")}">${redH.tier}</span></div>
-                <div class="enemy-mechanics">Loại ST: <strong>${redH.damage_type === "magic" ? "Phép" : redH.damage_type === "true_damage" ? "Chuẩn" : "Vật lý"}</strong> | Cơ động: <strong>${redH.mobility}/100</strong></div>
-                <div class="enemy-weakness">Điểm yếu: ${redH.weaknesses}</div>
-              </div>
-            </div>
-
-            <div class="counter-advice">
-              <strong>Chiến thuật khắc chế ${redH.name}:</strong> ${redH.counter_tips}
-            </div>
-
-            <div class="counter-items-box">
-              <span class="counter-items-label">Trang bị khuyến nghị:</span> ${counterItemsHtml}
-            </div>
-
-            <div class="counter-picks-row">
-              <div class="counter-picks-label">Gợi ý tướng khắc chế cứng (Hard Counter):</div>
-              <div class="counter-chips">
-                ${counterList
-                  .map(
-                    (c) => `
-                  <div class="counter-chip" onclick="window.draftManager.quickPickHero('blue', ${idx}, '${c.id}')" title="Click để khóa ${c.name} cho Đội Xanh">
-                    <img src="${c.avatar}" alt="${c.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-                    <div class="chip-info">
-                      <div class="chip-name">${c.name}</div>
-                      <div class="chip-sub">Tier ${c.tier}</div>
-                    </div>
-                    <span class="chip-plus">+</span>
-                  </div>
-                `
-                  )
-                  .join("")}
-              </div>
-            </div>
-          </div>
-        `;
+        lanesHtml += this.enemyRow(laneKey, idx, redH, usedIds);
       } else if (blueH && redH) {
-        const blueWins =
-          blueH.counters?.includes(redH.id) || redH.countered_by?.includes(blueH.id);
-        const redWins =
-          redH.counters?.includes(blueH.id) || blueH.countered_by?.includes(redH.id);
-
-        let matchAssessment = "";
-        let tacticalGuide = "";
-        let matchClass = "match-even";
-
-        if (blueWins && !redWins) {
-          matchClass = "match-blue-win";
-          matchAssessment = `ĐỘI XANH (${blueH.name}) CHIẾM LỢI THẾ ĐÈ ĐƯỜNG RÕ RỆT`;
-          tacticalGuide = `Chất tướng của ${blueH.name} khắc chế điểm yếu của ${redH.name}. Hãy chủ động dọn lính trước, đóng băng lính hoặc ép giao tranh khi đối phương sử dụng hụt chiêu thức then chốt.`;
-        } else if (redWins && !blueWins) {
-          matchClass = "match-red-win";
-          matchAssessment = `ĐỘI ĐỎ (${redH.name}) CÓ LỢI THẾ ĐÈ ĐƯỜNG HƠN`;
-          tacticalGuide = `${blueH.name} đi kèo dưới so với ${redH.name}. Hãy đánh hòa hoãn, ôm trụ dọn lính an toàn và kêu gọi Rừng hoặc Trợ thủ lên gank hỗ trợ.`;
-        } else {
-          matchClass = "match-even";
-          matchAssessment = `KÈO ĐẤU CÂN BẰNG - QUYẾT ĐỊNH BỞI KỸ NĂNG & KIỂM SOÁT`;
-          tacticalGuide = `Hai vị tướng có ngưỡng sức mạnh ngang ngửa. Người chơi nào căn góc kỹ năng chuẩn xác hơn và đọc bản đồ tốt hơn sẽ giành thắng lợi.`;
-        }
-
-        counterCardsHtml += `
-          <div class="analysis-card matchup-card ${matchClass}">
-            <div class="card-lane-badge" style="background:${laneInfo.color}">
-              ${laneInfo.shortName} • ĐỐI ĐẦU ĐƯỜNG
-            </div>
-            
-            <div class="matchup-versus">
-              <div class="side-hero blue-side">
-                <img src="${blueH.avatar}" alt="${blueH.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-                <span>${blueH.name} (${blueH.tier})</span>
-              </div>
-              <div class="vs-badge">VS</div>
-              <div class="side-hero red-side">
-                <img src="${redH.avatar}" alt="${redH.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-                <span>${redH.name} (${redH.tier})</span>
-              </div>
-            </div>
-
-            <div class="matchup-result">${matchAssessment}</div>
-            <div class="matchup-guide"><strong>Phân tích chiến thuật:</strong> ${tacticalGuide}</div>
-          </div>
-        `;
+        const row = this.matchupRow(laneKey, blueH, redH);
+        lanesHtml += row.html;
+        summary.push(row.summary);
       } else if (!blueH && !redH) {
-        const topMeta = HEROES_DATABASE.filter(
+        const topMeta = HEROES_DATABASE.find(
           (c) =>
             !usedIds.has(c.id) &&
             (c.lane === laneKey || c.secondary_lane === laneKey) &&
             (c.tier === "S+" || c.tier === "S")
-        ).slice(0, 3);
-
-        if (topMeta.length > 0) {
-          suggestionCardsHtml += `
-            <div class="suggestion-chip" onclick="window.draftManager.quickPickHero('blue', ${idx}, '${topMeta[0].id}')" title="Click để chọn nhanh cho Đội Xanh">
-              <span class="sugg-lane">${laneInfo.shortName}:</span>
-              <img src="${topMeta[0].avatar}" alt="${topMeta[0].name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-              <b>${topMeta[0].name}</b> (${topMeta[0].tier})
-            </div>
+        );
+        if (topMeta) {
+          suggestionHtml += `
+            <button class="counter-chip" data-quick-pick="${topMeta.id}" data-pick-index="${idx}" aria-label="${t("analysis.lockFor", { name: topMeta.name })}">
+              ${heroImage(topMeta, "chip-img")}
+              <span class="chip-name">${topMeta.name}</span>
+              <span class="chip-lane">${laneShort(laneKey)}</span>
+            </button>
           `;
         }
       }
     });
 
-    // Team Synergies
-    const blueValidHeroes = bluePicks.map((p) => p.hero).filter(Boolean);
-    const synergyNotes = [];
-    if (blueValidHeroes.some((h) => h.id === "aya")) {
-      const bruisers = blueValidHeroes.filter((h) =>
-        ["tamyn", "taara", "arthur", "allain", "keera", "yan", "butterfly"].includes(h.id)
-      );
-      if (bruisers.length > 0) {
-        synergyNotes.push(`SIÊU COMBO: <strong>Aya + ${bruisers.map((b) => b.name).join(", ")}</strong> (Càn quét giao tranh tổng đỉnh cao)`);
-      } else {
-        synergyNotes.push(`GỢI Ý TÁC CHIẾN: Đội Xanh đã có Aya, hãy ưu tiên bổ sung Đấu sĩ càn lướt khỏe như <strong>Tamyn, Taara, Arthur, Butterfly</strong>.`);
-      }
-    }
-    if (blueValidHeroes.some((h) => h.id === "rouie")) {
-      synergyNotes.push(`CHIẾN THUẬT BIẾN ẢO: Rouie kết hợp hoàn hảo với các tướng cơ động cao có khả năng tái giao tranh như <strong>Eland'orr, Nakroth, Hayate</strong>.`);
-    }
+    const synergyNotes = this.synergyNotes(bluePicks.map((p) => p.hero).filter(Boolean));
 
-    if (!counterCardsHtml && !suggestionCardsHtml) {
-      containerEl.innerHTML = `
-        <div class="analysis-placeholder">
-          <div class="placeholder-title">HỆ THỐNG PHÂN TÍCH CHIẾN THUẬT REALTIME</div>
-          <p>Quy trình cấm chọn luân phiên Snake Draft: <strong>1 tướng &rarr; 2 tướng &rarr; 2 tướng &rarr; 2 tướng &rarr; 2 tướng &rarr; 1 tướng</strong>.</p>
-          <p>Hệ thống tự động nhận diện chất tướng đối phương, chỉ ra điểm yếu và đề xuất các lựa chọn khắc chế cứng chuẩn xác theo meta giải đấu!</p>
-        </div>
-      `;
+    if (!alertsHtml && !lanesHtml && !suggestionHtml) {
+      containerEl.innerHTML = `<p class="analysis-empty">${t("analysis.empty")}</p>`;
     } else {
       containerEl.innerHTML = `
-        ${suggestionCardsHtml ? `<div class="meta-suggestions-bar"><span class="bar-lbl">Gợi ý Hot Meta Đội Xanh:</span> ${suggestionCardsHtml}</div>` : ""}
-        ${synergyNotes.length > 0 ? `<div class="synergy-bar">${synergyNotes.map((s) => `<div>${s}</div>`).join("")}</div>` : ""}
-        <div class="counter-cards-list">
-          ${counterCardsHtml}
-        </div>
+        ${suggestionHtml ? `<div class="suggest-bar"><span class="bar-label">${t("analysis.suggest")}</span><div class="counter-chips">${suggestionHtml}</div></div>` : ""}
+        ${synergyNotes.map((note) => `<p class="synergy-note">${note}</p>`).join("")}
+        <div class="analysis-rows">${alertsHtml}${lanesHtml}</div>
       `;
     }
 
-    // Render Metrics Comparison
     if (blueMetricsEl && redMetricsEl) {
-      const blueScore = this.calculateTeamScore(bluePicks.map((p) => p.hero));
-      const redScore = this.calculateTeamScore(redPicks.map((p) => p.hero));
-
-      blueMetricsEl.innerHTML = this.renderMetricsHtml("ĐỘI XANH", blueScore, "#38bdf8");
-      redMetricsEl.innerHTML = this.renderMetricsHtml("ĐỘI ĐỎ", redScore, "#f43f5e");
+      blueMetricsEl.innerHTML = this.renderMetricsHtml("blue", this.calculateTeamScore(bluePicks.map((p) => p.hero)));
+      redMetricsEl.innerHTML = this.renderMetricsHtml("red", this.calculateTeamScore(redPicks.map((p) => p.hero)));
     }
+
+    return summary.slice(0, 3);
+  }
+
+  enemyRow(laneKey, idx, redH, usedIds) {
+    const inLane = (c) => !usedIds.has(c.id) && (c.lane === laneKey || c.secondary_lane === laneKey);
+    const direct = HEROES_DATABASE.filter(
+      (c) => inLane(c) && (redH.countered_by?.includes(c.id) || c.counters?.includes(redH.id))
+    );
+    const meta = HEROES_DATABASE.filter((c) => inLane(c) && (c.tier === "S+" || c.tier === "S"));
+    const counterList = [...new Set([...direct, ...meta])].slice(0, 4);
+    const items = redH.counter_items || [];
+    const dmg = redH.damage_type === "magic" ? "magic" : redH.damage_type === "true_damage" ? "true" : "physical";
+
+    return `
+      <details class="analysis-row enemy-row">
+        <summary>
+          <span class="row-lane">${LANE_ICONS[laneKey]}${laneShort(laneKey)}</span>
+          ${heroImage(redH, "row-img")}
+          <span class="row-head">
+            <b>${t("analysis.enemyLocked", { name: redH.name })}</b>
+            <span>${t("analysis.dmgLine", { dmg: t(`dmg.${dmg}`), mob: redH.mobility })}</span>
+          </span>
+          ${tierMedal(redH.tier)}
+        </summary>
+        <div class="row-body">
+          <p><strong>${t("analysis.weakness")}:</strong> ${redH.weaknesses}</p>
+          <p><strong>${t("analysis.counterTitle", { name: redH.name })}:</strong> ${redH.counter_tips}</p>
+          ${items.length ? `<p class="row-items"><strong>${t("analysis.items")}:</strong> ${items.map((i) => `<span class="item-pill">${i}</span>`).join(" ")}</p>` : ""}
+          ${counterList.length ? `
+            <p class="bar-label">${t("analysis.counterPicks")}</p>
+            <div class="counter-chips">
+              ${counterList.map((c) => `
+                <button class="counter-chip" data-quick-pick="${c.id}" data-pick-index="${idx}" aria-label="${t("analysis.lockFor", { name: c.name })}">
+                  ${heroImage(c, "chip-img")}
+                  <span class="chip-name">${c.name}</span>
+                  ${tierMedal(c.tier)}
+                </button>
+              `).join("")}
+            </div>
+          ` : ""}
+        </div>
+      </details>
+    `;
+  }
+
+  matchupRow(laneKey, blueH, redH) {
+    const blueWins = blueH.counters?.includes(redH.id) || redH.countered_by?.includes(blueH.id);
+    const redWins = redH.counters?.includes(blueH.id) || blueH.countered_by?.includes(redH.id);
+    const names = { blue: blueH.name, red: redH.name };
+
+    let tone = "even";
+    let verdict = t("analysis.even");
+    let guide = t("analysis.evenGuide");
+    if (blueWins && !redWins) {
+      tone = "blue";
+      verdict = t("analysis.blueWin");
+      guide = t("analysis.blueGuide", names);
+    } else if (redWins && !blueWins) {
+      tone = "red";
+      verdict = t("analysis.redWin");
+      guide = t("analysis.redGuide", names);
+    }
+
+    const pairing = `${blueH.name} ${t("analysis.vs")} ${redH.name}`;
+    return {
+      summary: { tone, title: `${laneShort(laneKey)}: ${verdict}`, sub: pairing },
+      html: `
+        <details class="analysis-row match-row tone-${tone}">
+          <summary>
+            <span class="row-lane">${LANE_ICONS[laneKey]}${laneShort(laneKey)}</span>
+            ${heroImage(blueH, "row-img side-blue")}
+            ${heroImage(redH, "row-img side-red")}
+            <span class="row-head"><b>${verdict}</b><span>${pairing}</span></span>
+          </summary>
+          <div class="row-body">${guide}</div>
+        </details>
+      `,
+    };
+  }
+
+  synergyNotes(blueHeroes) {
+    const notes = [];
+    if (blueHeroes.some((h) => h.id === "aya")) {
+      const bruisers = blueHeroes.filter((h) =>
+        ["tamyn", "taara", "arthur", "allain", "keera", "yan", "butterfly"].includes(h.id)
+      );
+      notes.push(
+        bruisers.length > 0
+          ? t("synergy.ayaCombo", { names: bruisers.map((b) => b.name).join(", ") })
+          : t("synergy.ayaHint")
+      );
+    }
+    if (blueHeroes.some((h) => h.id === "rouie")) notes.push(t("synergy.rouie"));
+    return notes;
   }
 
   calculateTeamScore(heroes) {
     const valid = heroes.filter(Boolean);
-    if (valid.length === 0) {
-      return { count: 0, phys: 50, magic: 50, cc: 40, tank: 40, mobility: 50, warnings: [] };
-    }
+    if (valid.length === 0) return { count: 0, warnings: [] };
 
     let magicCount = 0;
     let physCount = 0;
@@ -285,26 +211,18 @@ class MetaAnalyzer {
 
     const totalDmg = magicCount + physCount || 1;
     const magicPct = Math.round((magicCount / totalDmg) * 100);
-    const physPct = 100 - magicPct;
-
     const avgCC = Math.min(100, Math.round(ccSum / valid.length));
     const avgTank = Math.min(100, Math.round(tankSum / valid.length));
     const avgMob = Math.min(100, Math.round(mobSum / valid.length));
 
     const warnings = [];
-    if (valid.length >= 3 && magicCount === 0) {
-      warnings.push("Thiếu sát thương Phép! Đối thủ sẽ dễ dàng lên toàn bộ giáp vật lý và Khiên Thất Truyền.");
-    }
-    if (valid.length >= 3 && avgTank < 35) {
-      warnings.push("Tuyến trước mỏng manh, thiếu đấu sĩ/đỡ đòn mở giao tranh!");
-    }
-    if (valid.length >= 3 && avgCC < 45) {
-      warnings.push("Thiếu khống chế cứng chỉ định, khó bắt giữ các tướng cơ động như Tamyn, Aoi, Nakroth, Butterfly.");
-    }
+    if (valid.length >= 3 && magicCount === 0) warnings.push(t("warn.noMagic"));
+    if (valid.length >= 3 && avgTank < 35) warnings.push(t("warn.thinFront"));
+    if (valid.length >= 3 && avgCC < 45) warnings.push(t("warn.lowCc"));
 
     return {
       count: valid.length,
-      phys: physPct,
+      phys: 100 - magicPct,
       magic: magicPct,
       cc: avgCC,
       tank: avgTank,
@@ -313,40 +231,39 @@ class MetaAnalyzer {
     };
   }
 
-  renderMetricsHtml(teamName, score, color) {
+  renderMetricsHtml(team, score) {
+    const head = `
+      <div class="score-header">
+        <h3 class="team-${team}-text">${teamName(team)}</h3>
+        <span class="score-count">${t("metric.count", { n: score.count })}</span>
+      </div>
+    `;
+    if (score.count === 0) {
+      return `<div class="team-score-card">${head}<p class="score-empty">${t("metric.empty")}</p></div>`;
+    }
+
+    const bar = (labelKey, value) => `
+      <div class="metric-row">
+        <span class="m-label">${t(labelKey)}</span>
+        <div class="m-bar"><div class="m-fill team-${team}-fill" style="width:${value}%"></div></div>
+        <span class="m-val">${value}</span>
+      </div>
+    `;
+
     return `
       <div class="team-score-card">
-        <div class="score-header" style="color: ${color}">
-          <span>${teamName}</span>
-          <span class="score-count">${score.count}/5 ĐÃ CHỌN</span>
-        </div>
+        ${head}
         <div class="metric-row">
-          <span class="m-label">Cơ cấu ST:</span>
+          <span class="m-label">${t("metric.dmg")}</span>
           <div class="m-dual-bar">
-            <div class="bar-phys" style="width: ${score.phys}%">VL ${score.phys}%</div>
-            <div class="bar-magic" style="width: ${score.magic}%">Phép ${score.magic}%</div>
+            ${score.phys ? `<span class="bar-phys" style="width:${score.phys}%">${score.phys >= 25 ? `${t("metric.physShort")} ${score.phys}%` : ""}</span>` : ""}
+            ${score.magic ? `<span class="bar-magic" style="width:${score.magic}%">${score.magic >= 25 ? `${t("metric.magicShort")} ${score.magic}%` : ""}</span>` : ""}
           </div>
         </div>
-        <div class="metric-row">
-          <span class="m-label">Khống chế:</span>
-          <div class="m-bar"><div class="m-fill" style="width: ${score.cc}%; background: #a855f7"></div></div>
-          <span class="m-val">${score.cc}%</span>
-        </div>
-        <div class="metric-row">
-          <span class="m-label">Chống chịu:</span>
-          <div class="m-bar"><div class="m-fill" style="width: ${score.tank}%; background: #10b981"></div></div>
-          <span class="m-val">${score.tank}%</span>
-        </div>
-        <div class="metric-row">
-          <span class="m-label">Cơ động:</span>
-          <div class="m-bar"><div class="m-fill" style="width: ${score.mobility}%; background: #38bdf8"></div></div>
-          <span class="m-val">${score.mobility}%</span>
-        </div>
-        ${
-          score.warnings.length > 0
-            ? `<div class="team-warnings">${score.warnings.map((w) => `<div class="warning-item">! ${w}</div>`).join("")}</div>`
-            : ""
-        }
+        ${bar("metric.cc", score.cc)}
+        ${bar("metric.tank", score.tank)}
+        ${bar("metric.mobility", score.mobility)}
+        ${score.warnings.length ? `<ul class="team-warnings">${score.warnings.map((w) => `<li>${w}</li>`).join("")}</ul>` : ""}
       </div>
     `;
   }

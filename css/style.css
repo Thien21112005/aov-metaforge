@@ -402,7 +402,6 @@ input::placeholder {
 
 /* Transitional padding until each tab owns its layout */
 .gacha-dashboard,
-.bp-dashboard,
 #tab-catalog {
   padding: 16px 20px 48px;
 }

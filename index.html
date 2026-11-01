@@ -15,6 +15,7 @@
   
   <!-- Stylesheet (Anti-Cache) -->
   <link rel="stylesheet" href="css/style.css?v=3.0">
+  <link rel="stylesheet" href="css/draft.css?v=3.0">
   <link rel="stylesheet" href="css/legacy.css?v=3.0">
   
   <!-- GSAP Animation Engine -->
@@ -157,115 +158,86 @@
       </section>
 
       <!-- ===================================================
-           TAB 2: CẤM / CHỌN & PHÂN TÍCH KHẮC CHẾ THÔNG MINH
+           TAB 2: DRAFT BOARD
            =================================================== -->
       <section id="tab-banpick" class="tab-panel">
-        <div class="bp-dashboard">
-          
-          <!-- DRAFT TURN CONTROLLER (SNAKE PICK: 1 - 2 - 2 - 2 - 2 - 1) -->
-          <div class="draft-turn-panel">
-            <div class="draft-turn-top">
-              <div class="draft-mode-selector">
-                <span class="draft-lbl">ĐỘI CHỌN TRƯỚC (FIRST PICK):</span>
-                <div class="first-pick-pill-group">
-                  <button class="first-pick-btn active" id="btn-blue-first" data-first="blue" title="Chọn Đội Xanh pick trước">
-                    ĐỘI XANH (BLUE)
-                  </button>
-                  <button class="first-pick-btn" id="btn-red-first" data-first="red" title="Chọn Đội Đỏ pick trước">
-                    ĐỘI ĐỎ (RED)
-                  </button>
-                </div>
-              </div>
-              <div class="draft-step-actions">
-                <button class="btn-step-nav" id="btn-prev-step" title="Quay lại lượt trước">LƯỢT TRƯỚC</button>
-                <button class="btn-step-nav" id="btn-next-step" title="Chuyển sang lượt kế tiếp">LƯỢT TIẾP</button>
-              </div>
-            </div>
-
-            <!-- Visual Stepper timeline: 1 -> 2 -> 2 -> 2 -> 2 -> 1 -->
-            <div class="draft-stepper-track" id="draft-stepper-track">
-              <!-- Populated by draft.js -->
-            </div>
-
-            <!-- Current Turn Banner -->
-            <div class="current-turn-banner" id="current-turn-banner">
-              <!-- Populated by draft.js -->
-            </div>
+        <div class="draft-toolbar">
+          <span class="toolbar-label" id="first-pick-label" data-i18n="draft.firstPick">Chọn trước</span>
+          <div class="seg" role="group" aria-labelledby="first-pick-label">
+            <button class="seg-btn active" id="btn-blue-first" data-i18n="team.blue">Đội Xanh</button>
+            <button class="seg-btn" id="btn-red-first" data-i18n="team.red">Đội Đỏ</button>
           </div>
-
-          <!-- BAN PICK ARENA: BLUE VS RED -->
-          <div class="bp-arena">
-            
-            <!-- BLUE TEAM -->
-            <div class="team-card blue-team-card">
-              <div class="team-card-header">
-                <div class="team-card-title-group">
-                  <span class="team-indicator blue-indicator"></span>
-                  <h3>ĐỘI XANH (BLUE TEAM)</h3>
-                </div>
-                <button class="btn-team-first-tag active" id="btn-tag-blue-first" title="Bấm để chọn Đội Xanh Pick Trước">
-                  FIRST PICK
-                </button>
-              </div>
-              <div class="section-subhead">LƯỢT CẤM (5)</div>
-              <div class="bans-row" id="blue-bans"></div>
-
-              <div class="section-subhead">LƯỢT CHỌN THEO VỊ TRÍ (5)</div>
-              <div class="picks-column" id="blue-picks"></div>
-            </div>
-
-            <!-- RED TEAM -->
-            <div class="team-card red-team-card">
-              <div class="team-card-header">
-                <div class="team-card-title-group">
-                  <span class="team-indicator red-indicator"></span>
-                  <h3>ĐỘI ĐỎ (RED TEAM)</h3>
-                </div>
-                <button class="btn-team-first-tag" id="btn-tag-red-first" title="Bấm để chọn Đội Đỏ Pick Trước">
-                  SECOND PICK
-                </button>
-              </div>
-              <div class="section-subhead">LƯỢT CẤM (5)</div>
-              <div class="bans-row" id="red-bans"></div>
-
-              <div class="section-subhead">LƯỢT CHỌN THEO VỊ TRÍ (5)</div>
-              <div class="picks-column" id="red-picks"></div>
-            </div>
-
+          <button class="ctl-btn" id="btn-prev-step" data-i18n="draft.prev">Lượt trước</button>
+          <button class="ctl-btn" id="btn-next-step" data-i18n="draft.next">Lượt tiếp</button>
+          <div class="toolbar-end">
+            <button class="ctl-btn" id="btn-draft-timer" data-i18n="draft.timer">Đồng hồ</button>
+            <button class="ctl-btn" id="btn-quick-meta-fill" data-i18n="draft.sample">Tình huống mẫu</button>
+            <button class="ctl-btn" id="btn-reset-banpick" data-i18n="draft.reset">Đặt lại</button>
           </div>
-
-          <!-- ARENA ACTIONS -->
-          <div class="arena-actions-bar">
-            <button class="btn-outline-action" id="btn-quick-meta-fill">
-              TÌNH HUỐNG MẪU (SNAKE DRAFT DEMO)
-            </button>
-            <button class="btn-outline-action" id="btn-reset-banpick">
-              ĐẶT LẠI TRẬN ĐẤU
-            </button>
-          </div>
-
-          <!-- SMART AI COUNTER & ANALYSIS PANEL -->
-          <div class="analysis-panel">
-            <div class="analysis-panel-header">
-              <div class="analysis-header-title">
-                <span class="ai-badge">AI REALTIME META</span>
-                <h3>TRÍ TUỆ PHÂN TÍCH KHẮC CHẾ & TƯƠNG QUAN LỰC LƯỢNG</h3>
-              </div>
-            </div>
-
-            <!-- Dynamic Content (Alerts, Counters, Matchups) -->
-            <div id="bp-analysis-content">
-              <!-- Dynamically populated by analyzer.js -->
-            </div>
-
-            <!-- Team Radar / Metrics -->
-            <div class="team-metrics-comparison">
-              <div id="blue-team-metrics"></div>
-              <div id="red-team-metrics"></div>
-            </div>
-          </div>
-
         </div>
+
+        <div class="draft-ban-bar" id="draft-ban-bar">
+          <div class="bans-row" id="blue-bans"></div>
+          <div class="turn-clock">
+            <span class="clock-time" id="draft-clock">0:30</span>
+            <span class="turn-line" id="draft-turn-line" aria-live="polite"></span>
+          </div>
+          <div class="bans-row" id="red-bans"></div>
+        </div>
+
+        <div class="draft-board" id="draft-board">
+          <div class="team-rail team-blue">
+            <div class="rail-head">
+              <h2 data-i18n="team.blue">Đội Xanh</h2>
+              <span class="rail-order" id="blue-order"></span>
+            </div>
+            <div class="picks-column" id="blue-picks"></div>
+          </div>
+
+          <div class="draft-center">
+            <div class="draft-seam" id="draft-seam" role="group" data-i18n-label="draft.seamLabel"></div>
+            <div class="hero-picker" id="hero-picker">
+              <div class="picker-head">
+                <h3 class="picker-title" id="picker-title" aria-live="polite"></h3>
+                <button class="ctl-btn" id="picker-close" data-i18n="ctl.close">Đóng</button>
+              </div>
+              <div class="picker-tools">
+                <input type="text" id="picker-search" class="text-input" data-i18n-placeholder="picker.search" data-i18n-label="picker.search" />
+                <div class="seg lane-filters" role="group" data-i18n-label="filter.label">
+                  <button class="seg-btn picker-filter active" data-lane="all" data-i18n="filter.all">Tất cả</button>
+                  <button class="seg-btn picker-filter" data-lane="top" data-i18n="short.top">Top</button>
+                  <button class="seg-btn picker-filter" data-lane="jungle" data-i18n="short.jungle">Rừng</button>
+                  <button class="seg-btn picker-filter" data-lane="mid" data-i18n="short.mid">Mid</button>
+                  <button class="seg-btn picker-filter" data-lane="ad" data-i18n="short.ad">AD</button>
+                  <button class="seg-btn picker-filter" data-lane="sp" data-i18n="short.sp">SP</button>
+                </div>
+              </div>
+              <div class="picker-grid" id="picker-grid"></div>
+            </div>
+            <div class="verdict-strip" id="verdict-strip">
+              <ul class="verdict-list" id="verdict-list"></ul>
+              <button class="ctl-btn verdict-more" id="verdict-more" data-i18n="analysis.more">Xem phân tích</button>
+            </div>
+          </div>
+
+          <div class="team-rail team-red">
+            <div class="rail-head">
+              <h2 data-i18n="team.red">Đội Đỏ</h2>
+              <span class="rail-order" id="red-order"></span>
+            </div>
+            <div class="picks-column" id="red-picks"></div>
+          </div>
+        </div>
+        <div class="picker-scrim" id="picker-scrim"></div>
+
+        <section class="draft-analysis" id="draft-analysis">
+          <h2 class="analysis-title" data-i18n="analysis.title">Phân tích kèo</h2>
+          <div id="bp-analysis-content"></div>
+          <div class="team-metrics-comparison">
+            <div id="blue-team-metrics"></div>
+            <div id="red-team-metrics"></div>
+          </div>
+        </section>
       </section>
 
       <!-- ===================================================
@@ -290,34 +262,6 @@
       </section>
 
     </main>
-  </div>
-
-  <!-- ===================================================
-       MODAL: HERO PICKER (FOR BAN / PICK)
-       =================================================== -->
-  <div class="modal-overlay" id="hero-picker-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modal-picker-title">CHỌN TƯỚNG</h3>
-        <button class="modal-close-btn" id="modal-close-btn">&times;</button>
-      </div>
-      <div class="modal-controls">
-        <input type="text" id="modal-search-input" class="modal-search" placeholder="Nhập tên tướng cần chọn..." />
-        <div class="modal-role-filters">
-          <button class="modal-role-btn active" data-lane="all">TẤT CẢ</button>
-          <button class="modal-role-btn" data-lane="top">TOP</button>
-          <button class="modal-role-btn" data-lane="jungle">RỪNG</button>
-          <button class="modal-role-btn" data-lane="mid">MID</button>
-          <button class="modal-role-btn" data-lane="ad">AD</button>
-          <button class="modal-role-btn" data-lane="sp">SUP</button>
-        </div>
-      </div>
-      <div class="modal-body">
-        <div class="picker-grid" id="modal-heroes-grid">
-          <!-- Populated dynamically -->
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- ===================================================
