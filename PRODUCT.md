@@ -36,7 +36,7 @@ Static client-side app: `index.html`, `css/style.css`, vanilla JS in `js/`, GSAP
 
 ## Brand Commitments
 
-- Name: AOV MetaForge. Existing emblem: `assets/images/aov_metaforge_logo.png`.
+- Name: AOV MetaForge. Emblem: `assets/images/aov_metaforge_logo.svg`.
 - It must feel like it belongs to Liên Quân Mobile (owner's explicit requirement).
 - Unofficial community project; Arena of Valor assets belong to Tencent Games and Garena. It must not pass itself off as an official Garena product.
 
