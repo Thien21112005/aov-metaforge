@@ -27,3 +27,9 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+
+# Impeccable local artifacts
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/critique/
+.impeccable/build/
