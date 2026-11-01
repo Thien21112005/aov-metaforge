@@ -6,14 +6,16 @@
 class GachaManager {
   constructor() {
     this.isRolling = false;
-    this.currentMode = "5"; // "1", "2", "3", "5"
+    this.currentMode = "5"; // "1", "2", "3", "5", "custom"
     this.selectedLaneFor1 = "all"; // for mode 1
     this.activeLanes = ["top", "jungle", "mid", "ad", "sp"];
+    this.lastResults = null;
     this.archive = this.loadArchive();
 
     this.initElements();
     this.bindEvents();
     this.renderReels();
+    this.renderResult();
     this.renderArchiveList();
   }
 
@@ -34,21 +36,21 @@ class GachaManager {
       btn.addEventListener("click", () => {
         if (this.isRolling) return;
         if (typeof sounds !== "undefined") sounds.playClick();
-        this.modeButtons.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
+        this.modeButtons.forEach((b) => {
+          b.classList.toggle("active", b === btn);
+          b.setAttribute("aria-pressed", String(b === btn));
+        });
         this.currentMode = btn.dataset.mode;
         this.updateActiveLanes();
-        this.renderReels();
+        this.clearResults();
       });
     });
 
-    if (this.laneSelect1) {
-      this.laneSelect1.addEventListener("change", (e) => {
-        this.selectedLaneFor1 = e.target.value;
-        this.updateActiveLanes();
-        this.renderReels();
-      });
-    }
+    this.laneSelect1?.addEventListener("change", (e) => {
+      this.selectedLaneFor1 = e.target.value;
+      this.updateActiveLanes();
+      this.clearResults();
+    });
 
     this.laneCheckboxes.forEach((chk) => {
       chk.addEventListener("change", () => {
@@ -56,32 +58,52 @@ class GachaManager {
         if (typeof sounds !== "undefined") sounds.playClick();
         if (this.currentMode === "custom") {
           this.updateActiveLanes();
-          this.renderReels();
+          this.clearResults();
         }
       });
     });
 
-    if (this.btnRoll) {
-      this.btnRoll.addEventListener("click", () => this.startRoll());
-    }
+    this.btnRoll?.addEventListener("click", () => this.startRoll());
 
-    if (this.btnClearArchive) {
-      this.btnClearArchive.addEventListener("click", () => {
-        if (confirm("Bạn có chắc muốn xóa toàn bộ lịch sử quay gacha không?")) {
-          this.archive = [];
-          this.saveArchive();
-          this.renderArchiveList();
-        }
-      });
-    }
+    this.btnClearArchive?.addEventListener("click", () => {
+      if (confirm(t("archive.confirm"))) {
+        this.archive = [];
+        this.saveArchive();
+        this.renderArchiveList();
+      }
+    });
+
+    this.resultBanner?.addEventListener("click", (e) => {
+      if (e.target.closest("#btn-copy-team")) this.copyTeam(e.target.closest("#btn-copy-team"));
+    });
+
+    this.reelsContainer?.addEventListener("click", (e) => {
+      const opener = e.target.closest(".reel-open");
+      if (opener && !this.isRolling) showHeroDetail(findHero(opener.dataset.heroId));
+    });
+
+    this.archiveContainer?.addEventListener("click", (e) => {
+      const chip = e.target.closest(".archive-hero-chip");
+      if (chip) showHeroDetail(findHero(chip.dataset.heroId));
+    });
+
+    document.addEventListener("aov:langchange", () => {
+      if (!this.isRolling) {
+        this.renderRollLabel();
+        if (this.lastResults) this.showResults(this.lastResults);
+        else this.renderReels();
+        this.renderResult();
+      }
+      this.renderArchiveList();
+    });
   }
 
   updateActiveLanes() {
     if (this.laneSelect1) {
-      this.laneSelect1.style.display = this.currentMode === "1" ? "inline-block" : "none";
+      this.laneSelect1.hidden = this.currentMode !== "1";
     }
     if (this.customLanesPanel) {
-      this.customLanesPanel.style.display = this.currentMode === "custom" ? "flex" : "none";
+      this.customLanesPanel.hidden = this.currentMode !== "custom";
     }
 
     if (this.currentMode === "custom") {
@@ -100,53 +122,77 @@ class GachaManager {
     }
   }
 
+  clearResults() {
+    this.lastResults = null;
+    this.renderReels();
+    this.renderResult();
+    this.renderRollLabel();
+  }
+
+  renderRollLabel(state = this.lastResults ? "again" : "idle") {
+    if (!this.btnRoll) return;
+    const key = state === "rolling" ? "gacha.rolling" : state === "again" ? "gacha.rollAgain" : "gacha.roll";
+    this.btnRoll.textContent = t(key);
+  }
+
+  reelFrame(laneKey, index) {
+    return `
+      <div class="reel-head">
+        <span class="reel-lane">${LANE_ICONS[laneKey]}${laneShort(laneKey)}</span>
+        <span class="reel-lane-full">${laneName(laneKey)}</span>
+      </div>
+      <div class="slot-window">
+        <div class="slot-strip" id="slot-strip-${index}"></div>
+      </div>
+    `;
+  }
+
   renderReels() {
     if (!this.reelsContainer) return;
-    this.reelsContainer.innerHTML = "";
     this.reelsContainer.className = `reels-grid lanes-count-${this.activeLanes.length}`;
+    this.reelsContainer.innerHTML = "";
 
     this.activeLanes.forEach((laneKey, index) => {
-      const laneInfo = LANES[laneKey];
       const slotEl = document.createElement("div");
       slotEl.className = "reel-slot";
       slotEl.id = `reel-slot-${index}`;
-
-      slotEl.innerHTML = `
-        <div class="slot-header" style="border-top: 3px solid ${laneInfo.color}">
-          <span class="lane-name"><span class="lane-icon-sub">${laneInfo.icon}</span> ${laneInfo.shortName.toUpperCase()}</span>
-          <span class="lane-badge-sub">${laneInfo.name}</span>
+      slotEl.innerHTML = this.reelFrame(laneKey, index);
+      slotEl.querySelector(".slot-strip").innerHTML = `
+        <div class="reel-card idle-card">
+          <span class="idle-icon">${LANE_ICONS[laneKey]}</span>
+          <span class="idle-label">${t("gacha.ready")}</span>
         </div>
-        <div class="slot-window">
-          <div class="slot-strip" id="slot-strip-${index}">
-            <div class="reel-card idle-card">
-              <div class="card-avatar placeholder-avatar" style="border-color: ${laneInfo.color}">${laneInfo.icon}</div>
-              <div class="card-name">${laneInfo.shortName}</div>
-              <div class="card-badge">SẴN SÀNG</div>
-            </div>
-          </div>
-        </div>
-        <div class="slot-indicator"></div>
       `;
       this.reelsContainer.appendChild(slotEl);
     });
   }
 
+  heroCard(hero) {
+    return `
+      <div class="reel-card">
+        ${heroImage(hero, "reel-img")}
+        ${tierMedal(hero.tier)}
+        <div class="reel-caption">
+          <span class="reel-name">${hero.name}</span>
+          <span class="reel-role">${roleName(hero.roles[0]) || ""}</span>
+        </div>
+      </div>
+    `;
+  }
+
   startRoll() {
     if (this.isRolling) return;
     this.isRolling = true;
+    this.lastResults = null;
     this.btnRoll.disabled = true;
-    this.btnRoll.classList.add("loading");
-    this.btnRoll.innerHTML = `<span class="spinner"></span> ĐANG QUAY NHÂN PHẨM...`;
+    this.renderRollLabel("rolling");
     if (typeof sounds !== "undefined") sounds.playClick();
-
-    if (this.resultBanner) {
-      this.resultBanner.classList.remove("show");
-    }
+    this.renderReels();
+    this.renderResult();
 
     const rollResults = [];
     const usedHeroIds = new Set();
-    const CARD_HEIGHT = 120;
-    const STRIP_COUNT = 24;
+    const STRIP_COUNT = isReducedMotion() ? 1 : 24;
 
     this.activeLanes.forEach((laneKey, index) => {
       let candidates = HEROES_DATABASE.filter(
@@ -169,44 +215,29 @@ class GachaManager {
 
       const stripEl = document.getElementById(`slot-strip-${index}`);
       if (!stripEl) return;
-      stripEl.innerHTML = "";
       stripEl.style.transition = "none";
       stripEl.style.transform = "translateY(0px)";
 
-      const cardsData = [];
+      const cards = [];
       for (let i = 0; i < STRIP_COUNT - 1; i++) {
-        const randomHero = candidates[Math.floor(Math.random() * candidates.length)];
-        cardsData.push(randomHero);
+        cards.push(candidates[Math.floor(Math.random() * candidates.length)]);
       }
-      cardsData.push(targetHero);
-
-      cardsData.forEach((h) => {
-        const tier = TIERS[h.tier] || TIERS["A"];
-        const card = document.createElement("div");
-        card.className = `reel-card tier-${h.tier.replace("+", "-plus")}`;
-        card.innerHTML = `
-          <div class="card-avatar" style="border-color: ${tier.border}">
-            <img src="${h.avatar}" alt="${h.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-            <span class="tier-tag" style="background: ${tier.color}">${h.tier}</span>
-          </div>
-          <div class="card-name">${h.name}</div>
-          <div class="card-role">${h.roles[0] || "Đấu sĩ"}</div>
-        `;
-        stripEl.appendChild(card);
-      });
+      cards.push(targetHero);
+      stripEl.innerHTML = cards.map((h) => this.heroCard(h)).join("");
     });
 
     let tickInterval = setInterval(() => {
       if (typeof sounds !== "undefined") sounds.playRollTick();
     }, 85);
 
-    const stopDelayBase = 1500;
-    const stopDelayStep = 320;
+    const stopDelayBase = isReducedMotion() ? 150 : 1500;
+    const stopDelayStep = isReducedMotion() ? 100 : 320;
 
     this.activeLanes.forEach((_, index) => {
       const slotDelay = stopDelayBase + index * stopDelayStep;
       const stripEl = document.getElementById(`slot-strip-${index}`);
-      const targetTranslate = -(STRIP_COUNT - 1) * CARD_HEIGHT;
+      const cardHeight = stripEl?.parentElement.clientHeight || 0;
+      const targetTranslate = -(STRIP_COUNT - 1) * cardHeight;
 
       setTimeout(() => {
         if (stripEl) {
@@ -216,26 +247,7 @@ class GachaManager {
       }, 50);
 
       setTimeout(() => {
-        const resultItem = rollResults[index];
-        const isLegendary = resultItem?.hero?.tier === "S+";
-
-        const slotEl = document.getElementById(`reel-slot-${index}`);
-        if (slotEl) {
-          slotEl.classList.add("slot-landed");
-          if (isLegendary) {
-            slotEl.classList.add("legendary-glow");
-            if (typeof sounds !== "undefined") sounds.playLegendaryFanfare();
-            if (window.gsap) {
-              window.gsap.fromTo(slotEl, { scale: 1.05, filter: "brightness(1.3)" }, { scale: 1, filter: "brightness(1)", duration: 0.5, ease: "elastic.out(1, 0.4)" });
-            }
-          } else {
-            if (typeof sounds !== "undefined") sounds.playCardStop();
-            if (window.gsap) {
-              window.gsap.fromTo(slotEl, { y: -4 }, { y: 0, duration: 0.22, ease: "back.out(2)" });
-            }
-          }
-        }
-
+        this.landReel(index, rollResults[index]);
         if (index === this.activeLanes.length - 1) {
           clearInterval(tickInterval);
           this.onRollComplete(rollResults);
@@ -244,73 +256,123 @@ class GachaManager {
     });
   }
 
+  landReel(index, result) {
+    const slotEl = document.getElementById(`reel-slot-${index}`);
+    if (!slotEl || !result) return;
+    const { hero } = result;
+    const isLegendary = hero.tier === "S+";
+
+    // Drop the spun strip so the landed card follows its window on resize
+    const stripEl = slotEl.querySelector(".slot-strip");
+    stripEl.style.transition = "none";
+    stripEl.style.transform = "none";
+    stripEl.innerHTML = this.heroCard(hero);
+
+    slotEl.classList.add("slot-landed");
+    slotEl.querySelector(".slot-window").insertAdjacentHTML(
+      "beforeend",
+      `<button class="reel-open" data-hero-id="${hero.id}" aria-label="${t("gacha.openHero", { name: hero.name })}"></button>`
+    );
+
+    if (isLegendary) {
+      slotEl.classList.add("legendary-glow");
+      if (typeof sounds !== "undefined") sounds.playLegendaryFanfare();
+    } else if (typeof sounds !== "undefined") {
+      sounds.playCardStop();
+    }
+
+    if (window.gsap && !isReducedMotion()) {
+      const img = slotEl.querySelector(".reel-img");
+      if (isLegendary && img) {
+        window.gsap.fromTo(img, { filter: "brightness(1.9)" }, { filter: "brightness(1)", duration: 0.9, ease: "power3.out", clearProps: "filter" });
+        window.gsap.fromTo(slotEl.querySelector(".tier-medal"), { scale: 2.2 }, { scale: 1, duration: 0.5, ease: "power3.out", clearProps: "transform" });
+      } else {
+        window.gsap.fromTo(slotEl, { y: -4 }, { y: 0, duration: 0.22, ease: "power2.out", clearProps: "transform" });
+      }
+    }
+  }
+
+  /** Redraws an already landed team, used when the language changes. */
+  showResults(results) {
+    this.reelsContainer.innerHTML = "";
+    results.forEach((result, index) => {
+      const slotEl = document.createElement("div");
+      slotEl.className = `reel-slot slot-landed ${result.hero.tier === "S+" ? "legendary-glow is-settled" : ""}`;
+      slotEl.id = `reel-slot-${index}`;
+      slotEl.innerHTML = this.reelFrame(result.lane, index);
+      slotEl.querySelector(".slot-strip").innerHTML = this.heroCard(result.hero);
+      slotEl.querySelector(".slot-window").insertAdjacentHTML(
+        "beforeend",
+        `<button class="reel-open" data-hero-id="${result.hero.id}" aria-label="${t("gacha.openHero", { name: result.hero.name })}"></button>`
+      );
+      this.reelsContainer.appendChild(slotEl);
+    });
+  }
+
+  renderResult() {
+    if (!this.resultBanner) return;
+    const results = this.lastResults;
+    if (!results) {
+      this.resultBanner.className = "result-line";
+      this.resultBanner.innerHTML = `<p class="result-hint">${this.isRolling ? t("gacha.rolling") : t("gacha.hint")}</p>`;
+      return;
+    }
+
+    const hasTamyn = results.some((r) => r.hero.id === "tamyn");
+    const hasSPlus = results.some((r) => r.hero.tier === "S+");
+    const key = hasTamyn ? "tamyn" : hasSPlus ? "splus" : "normal";
+    this.resultBanner.className = `result-line ${hasTamyn || hasSPlus ? "is-gold" : ""}`;
+    this.resultBanner.innerHTML = `
+      <div class="result-text">
+        <h3>${t(`gacha.result.${key}`)}</h3>
+        <p>${t(`gacha.result.${key}Desc`)}</p>
+      </div>
+      <button class="ctl-btn" id="btn-copy-team">${t("gacha.copy")}</button>
+    `;
+  }
+
+  copyTeam(button) {
+    if (!this.lastResults) return;
+    const text = this.lastResults.map((r) => `${laneShort(r.lane)}: ${r.hero.name} (${r.hero.tier})`).join(" | ");
+    const done = (key) => {
+      button.textContent = t(key);
+      setTimeout(() => {
+        button.textContent = t("gacha.copy");
+      }, 1800);
+    };
+    if (!navigator.clipboard) {
+      done("gacha.copyFail");
+      return;
+    }
+    navigator.clipboard.writeText(`AOV MetaForge: ${text}`).then(
+      () => done("gacha.copied"),
+      () => done("gacha.copyFail")
+    );
+  }
+
   onRollComplete(rollResults) {
     this.isRolling = false;
+    this.lastResults = rollResults;
     this.btnRoll.disabled = false;
-    this.btnRoll.classList.remove("loading");
-    this.btnRoll.innerHTML = `QUAY LẠI GACHA`;
+    this.renderRollLabel("again");
+    this.renderResult();
 
-    const hasTamyn = rollResults.some((r) => r.hero.id === "tamyn");
-    const hasSPlus = rollResults.some((r) => r.hero.tier === "S+");
-
-    let bannerText = "Đội hình hoàn chỉnh chuẩn vị trí sẵn sàng leo rank!";
-    let bannerTitle = "ĐỘI HÌNH ĐÃ THIẾT LẬP";
-
-    if (hasTamyn) {
-      bannerTitle = "SIÊU QUÁI VẬT META: TAMYN XUẤT HIỆN";
-      bannerText = "Tỷ lệ đặc biệt thành công! Tamyn đang là đấu sĩ áp đảo nhất meta hiện tại.";
-    } else if (hasSPlus) {
-      bannerTitle = "NHÂN PHẨM VÀNG: S+ TIER XUẤT HIỆN";
-      bannerText = "Đội hình sở hữu các vị tướng cấp bậc tối cao tại các giải đấu!";
-    }
-
-    if (this.resultBanner) {
-      this.resultBanner.innerHTML = `
-        <div class="banner-title">${bannerTitle}</div>
-        <div class="banner-desc">${bannerText}</div>
-      `;
-      this.resultBanner.classList.add("show");
-    }
-
-    this.saveToArchive(rollResults, hasTamyn || hasSPlus);
+    const hasSpecial = rollResults.some((r) => r.hero.id === "tamyn" || r.hero.tier === "S+");
+    this.saveToArchive(rollResults, hasSpecial);
     this.renderArchiveList();
-
-    // Make landed slot cards interactive and clickable
-    rollResults.forEach((r, idx) => {
-      const slotEl = document.getElementById(`reel-slot-${idx}`);
-      if (slotEl) {
-        slotEl.style.cursor = "pointer";
-        slotEl.title = `Nhấp để xem chi tiết & bộ chiêu thức của ${r.hero.name}`;
-        slotEl.onclick = () => {
-          if (!this.isRolling && typeof showHeroDetail === "function") {
-            showHeroDetail(r.hero);
-          }
-        };
-      }
-    });
   }
 
   saveToArchive(rollResults, isSpecial) {
     const record = {
       id: Date.now(),
-      time: new Date().toLocaleString("vi-VN"),
+      time: new Date().toISOString(),
       mode: this.currentMode,
-      modeTitle:
-        this.currentMode === "5"
-          ? "Đội Hình 5v5"
-          : this.currentMode === "3"
-          ? "Cụm 3 (Mid-Rừng-SP)"
-          : this.currentMode === "2"
-          ? "Cặp Đôi Rồng (AD-SP)"
-          : `Đơn (${LANES[this.activeLanes[0]]?.shortName || "Tự do"})`,
-      isSpecial: isSpecial,
+      isSpecial,
       heroes: rollResults.map((r) => ({
         lane: r.lane,
-        laneName: LANES[r.lane]?.shortName || r.lane,
         name: r.hero.name,
         avatar: r.hero.avatar,
         tier: r.hero.tier,
-        role: r.hero.roles[0] || "",
         id: r.hero.id,
       })),
     };
@@ -337,57 +399,45 @@ class GachaManager {
     }
   }
 
+  archiveTime(value) {
+    const date = new Date(value);
+    // Older records stored an already formatted local string
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleString(currentLang === "vi" ? "vi-VN" : "en-GB", { dateStyle: "short", timeStyle: "short" });
+  }
+
   renderArchiveList() {
     if (!this.archiveContainer) return;
+    if (this.btnClearArchive) this.btnClearArchive.hidden = this.archive.length === 0;
     if (this.archive.length === 0) {
-      this.archiveContainer.innerHTML = `
-        <div class="archive-empty">
-          <div>Chưa có bản ghi nào. Hãy bấm <strong>Bắt Đầu Quay Gacha</strong> để tạo đội hình đầu tiên!</div>
-        </div>
-      `;
+      this.archiveContainer.innerHTML = `<p class="archive-empty">${t("archive.empty")}</p>`;
       return;
     }
 
-    this.archiveContainer.innerHTML = "";
-    this.archive.forEach((item) => {
-      const card = document.createElement("div");
-      card.className = `archive-item ${item.isSpecial ? "special-record" : ""}`;
-      const heroesHtml = item.heroes
-        .map((h) => {
-          const tier = TIERS[h.tier] || TIERS["A"];
-          return `
-            <div class="archive-hero-chip" data-hero-id="${h.id}" title="Nhấp để xem chi tiết & kỹ năng của ${h.name} (${h.laneName})">
-              <img src="${h.avatar}" alt="${h.name}" onerror="this.src='https://lienquan.garena.vn/wp-content/uploads/2024/02/favicon.jpg'"/>
-              <span class="chip-lane">${h.laneName}</span>
-              <span class="chip-name">${h.name}</span>
-              <span class="chip-tier" style="background: ${tier.color}">${h.tier}</span>
+    this.archiveContainer.innerHTML = this.archive
+      .map((item) => {
+        const heroes = item.heroes
+          .map((h) => `
+            <button class="archive-hero-chip" data-hero-id="${h.id}" aria-label="${t("gacha.openHero", { name: h.name })}">
+              <img class="hero-img chip-img" src="${h.avatar}" alt="" loading="lazy" data-initial="${h.name.charAt(0)}" />
+              <span class="chip-text">
+                <span class="chip-name">${h.name}</span>
+                <span class="chip-lane">${laneShort(h.lane)}</span>
+              </span>
+              ${tierMedal(h.tier)}
+            </button>
+          `)
+          .join("");
+        return `
+          <li class="archive-item ${item.isSpecial ? "special-record" : ""}">
+            <div class="archive-item-header">
+              <span class="archive-mode-tag">${t(`gacha.mode.${item.mode}`)}</span>
+              <span class="archive-time">${this.archiveTime(item.time)}</span>
             </div>
-          `;
-        })
-        .join("");
-
-      card.innerHTML = `
-        <div class="archive-item-header">
-          <span class="archive-mode-tag">${item.modeTitle}</span>
-          <span class="archive-time">${item.time}</span>
-        </div>
-        <div class="archive-heroes-row">
-          ${heroesHtml}
-        </div>
-      `;
-
-      card.querySelectorAll(".archive-hero-chip").forEach((chip) => {
-        chip.style.cursor = "pointer";
-        chip.addEventListener("click", () => {
-          const heroId = chip.getAttribute("data-hero-id");
-          const targetHero = HEROES_DATABASE.find((h) => h.id === heroId);
-          if (targetHero && typeof showHeroDetail === "function") {
-            showHeroDetail(targetHero);
-          }
-        });
-      });
-
-      this.archiveContainer.appendChild(card);
-    });
+            <div class="archive-heroes-row">${heroes}</div>
+          </li>
+        `;
+      })
+      .join("");
   }
 }

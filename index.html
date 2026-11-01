@@ -15,6 +15,7 @@
   
   <!-- Stylesheet (Anti-Cache) -->
   <link rel="stylesheet" href="css/style.css?v=3.0">
+  <link rel="stylesheet" href="css/gacha.css?v=3.0">
   <link rel="stylesheet" href="css/draft.css?v=3.0">
   <link rel="stylesheet" href="css/legacy.css?v=3.0">
   
@@ -74,87 +75,64 @@
     <main class="app-main">
       
       <!-- ===================================================
-           TAB 1: GACHA VÒNG QUAY NHÂN PHẨM & ĐỘI HÌNH
+           TAB 1: TEAM ROLL
            =================================================== -->
       <section id="tab-gacha" class="tab-panel active">
-        <div class="gacha-dashboard">
-          
-          <!-- Controls Card -->
-          <div class="gacha-controls-card">
-            <div class="gacha-title-row">
-              <span class="section-tag">SIMULATOR</span>
-              <h2>VÒNG QUAY GACHA ĐỘI HÌNH CHUẨN META</h2>
-              <p>Thuật toán quay phân bổ chuẩn xác theo từng đường, trọng số meta giải đấu và tỷ lệ nhân phẩm đặc biệt</p>
+        <div class="gacha-stage">
+          <div class="gacha-controls">
+            <h2 class="gacha-title" data-i18n="gacha.title">Quay đội hình</h2>
+            <div class="seg" role="group" data-i18n-label="gacha.modes">
+              <button class="seg-btn mode-btn active" data-mode="5" aria-pressed="true" data-i18n="gacha.mode.5">5 đường</button>
+              <button class="seg-btn mode-btn" data-mode="3" aria-pressed="false" data-i18n="gacha.mode.3">Bộ ba</button>
+              <button class="seg-btn mode-btn" data-mode="2" aria-pressed="false" data-i18n="gacha.mode.2">Cặp</button>
+              <button class="seg-btn mode-btn" data-mode="1" aria-pressed="false" data-i18n="gacha.mode.1">1 tướng</button>
+              <button class="seg-btn mode-btn" data-mode="custom" aria-pressed="false" data-i18n="gacha.mode.custom">Tự chọn đường</button>
             </div>
-
-            <div class="gacha-modes-bar">
-              <button class="mode-btn active" data-mode="5">FULL TEAM 5v5 (5 ĐƯỜNG)</button>
-              <button class="mode-btn" data-mode="3">TRIO MID - RỪNG - SUP</button>
-              <button class="mode-btn" data-mode="2">BOT DUO AD - SUP</button>
-              <button class="mode-btn" data-mode="1">QUAY 1 TƯỚNG</button>
-              <button class="mode-btn" data-mode="custom">TỰ CHỌN ĐƯỜNG (MULTI-LANE)</button>
-              <select class="lane-select-inline" id="gacha-lane-select-1" style="display: none;">
-                <option value="all">NGẪU NHIÊN ĐƯỜNG</option>
-                <option value="top">ĐƯỜNG CAESAR (TOP)</option>
-                <option value="jungle">ĐƯỜNG RỪNG (JUNGLE)</option>
-                <option value="mid">ĐƯỜNG GIỮA (MID)</option>
-                <option value="ad">ĐƯỜNG RỒNG (AD)</option>
-                <option value="sp">TRỢ THỦ (SUPPORT)</option>
-              </select>
+            <select class="lane-select" id="gacha-lane-select-1" data-i18n-label="gacha.pickLane" hidden>
+              <option value="all" data-i18n="gacha.anyLane"></option>
+              <option value="top" data-i18n="lane.top"></option>
+              <option value="jungle" data-i18n="lane.jungle"></option>
+              <option value="mid" data-i18n="lane.mid"></option>
+              <option value="ad" data-i18n="lane.ad"></option>
+              <option value="sp" data-i18n="lane.sp"></option>
+            </select>
+            <div class="custom-lanes" id="gacha-custom-lanes" hidden>
+              <label class="custom-lane-chip">
+                <input type="checkbox" class="lane-chk" value="top" checked />
+                <span class="chip-ui" data-i18n="short.top">Top</span>
+              </label>
+              <label class="custom-lane-chip">
+                <input type="checkbox" class="lane-chk" value="jungle" checked />
+                <span class="chip-ui" data-i18n="short.jungle">Rừng</span>
+              </label>
+              <label class="custom-lane-chip">
+                <input type="checkbox" class="lane-chk" value="mid" checked />
+                <span class="chip-ui" data-i18n="short.mid">Mid</span>
+              </label>
+              <label class="custom-lane-chip">
+                <input type="checkbox" class="lane-chk" value="ad" checked />
+                <span class="chip-ui" data-i18n="short.ad">AD</span>
+              </label>
+              <label class="custom-lane-chip">
+                <input type="checkbox" class="lane-chk" value="sp" checked />
+                <span class="chip-ui" data-i18n="short.sp">SP</span>
+              </label>
             </div>
-
-            <!-- Custom Multi-Lane Checkbox Selection -->
-            <div class="custom-lanes-panel" id="gacha-custom-lanes" style="display: none;">
-              <span class="custom-lanes-guide">Tick chọn các đường bạn muốn quay đồng thời:</span>
-              <div class="custom-lanes-chips">
-                <label class="custom-lane-chip">
-                  <input type="checkbox" class="lane-chk" value="top" checked />
-                  <span class="chip-ui"><span class="chip-marker">✓</span> CAESAR (TOP)</span>
-                </label>
-                <label class="custom-lane-chip">
-                  <input type="checkbox" class="lane-chk" value="jungle" checked />
-                  <span class="chip-ui"><span class="chip-marker">✓</span> RỪNG (JGL)</span>
-                </label>
-                <label class="custom-lane-chip">
-                  <input type="checkbox" class="lane-chk" value="mid" checked />
-                  <span class="chip-ui"><span class="chip-marker">✓</span> ĐƯỜNG GIỮA (MID)</span>
-                </label>
-                <label class="custom-lane-chip">
-                  <input type="checkbox" class="lane-chk" value="ad" checked />
-                  <span class="chip-ui"><span class="chip-marker">✓</span> XẠ THỦ (ADC)</span>
-                </label>
-                <label class="custom-lane-chip">
-                  <input type="checkbox" class="lane-chk" value="sp" checked />
-                  <span class="chip-ui"><span class="chip-marker">✓</span> TRỢ THỦ (SUP)</span>
-                </label>
-              </div>
-            </div>
-
-            <button class="btn-big-roll" id="btn-roll-gacha">
-              BẮT ĐẦU QUAY GACHA
-            </button>
+            <button class="btn-big-roll" id="btn-roll-gacha" data-i18n="gacha.roll">Quay đội hình</button>
           </div>
 
-          <!-- Result Winning Announcement -->
-          <div class="result-banner" id="gacha-result-banner"></div>
+          <div id="gacha-reels-container" class="reels-grid lanes-count-5"></div>
 
-          <!-- Reel Slots Container -->
-          <div id="gacha-reels-container" class="reels-grid lanes-count-5">
-            <!-- Dynamically populated by gacha.js -->
-          </div>
-
-          <!-- Gacha Archive / History Section -->
-          <div class="gacha-archive-card">
-            <div class="archive-header">
-              <h3>LỊCH SỬ THIẾT LẬP ĐỘI HÌNH</h3>
-              <button class="btn-clear" id="btn-clear-archive">XÓA LỊCH SỬ</button>
-            </div>
-            <div class="archive-list" id="gacha-archive-list">
-              <!-- Dynamically populated by gacha.js -->
-            </div>
-          </div>
-
+          <div class="result-line" id="gacha-result-banner" aria-live="polite"></div>
         </div>
+
+        <section class="gacha-archive">
+          <div class="archive-header">
+            <h2 data-i18n="archive.title">Lịch sử quay</h2>
+            <button class="ctl-btn" id="btn-clear-archive" data-i18n="archive.clear">Xóa lịch sử</button>
+          </div>
+          <ul class="archive-list" id="gacha-archive-list"></ul>
+        </section>
       </section>
 
       <!-- ===================================================

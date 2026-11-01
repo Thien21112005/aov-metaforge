@@ -1,0 +1,585 @@
+/* ===================================================
+   TEAM ROLL: mode row, reels on the portal stage, history
+   =================================================== */
+
+.gacha-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px 20px 18px;
+  background:
+    linear-gradient(rgba(10, 18, 36, 0.8), rgba(10, 18, 36, 0.94)),
+    url("../assets/images/gacha_portal_core.jpg") center 40% / cover;
+  border-bottom: 1px solid var(--line);
+}
+
+.gacha-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.gacha-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  margin-right: 8px;
+}
+
+.gacha-controls .seg {
+  background: rgba(10, 18, 36, 0.7);
+}
+
+.gacha-controls .seg-btn {
+  height: 40px;
+}
+
+.gacha-controls .seg-btn.active {
+  background: var(--surface-3);
+  color: var(--gilt);
+}
+
+.lane-select {
+  height: 40px;
+  padding: 0 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+}
+
+.lane-select[hidden],
+.custom-lanes[hidden] {
+  display: none;
+}
+
+.custom-lanes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  order: 3;
+}
+
+.custom-lane-chip {
+  cursor: pointer;
+}
+
+.custom-lane-chip input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.chip-ui {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 12px;
+  background: rgba(10, 18, 36, 0.7);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--mute);
+}
+
+.chip-ui svg {
+  width: 14px;
+  height: 14px;
+}
+
+.custom-lane-chip input:checked + .chip-ui {
+  background: var(--surface-3);
+  border-color: var(--gilt-deep);
+  color: var(--gilt);
+}
+
+.custom-lane-chip input:focus-visible + .chip-ui {
+  outline: 2px solid var(--gilt);
+  outline-offset: 2px;
+}
+
+.btn-big-roll {
+  margin-left: auto;
+  min-width: 190px;
+  height: 44px;
+  padding: 0 28px;
+  background: var(--gilt);
+  border: 0;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  color: var(--on-gilt);
+  transition: background-color 0.15s ease;
+}
+
+.btn-big-roll:hover:not(:disabled) {
+  background: var(--gilt-pale);
+}
+
+.btn-big-roll:disabled {
+  background: var(--gilt-deep);
+  color: var(--ink);
+  cursor: progress;
+}
+
+/* Reels */
+.reels-grid {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.reels-grid.lanes-count-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.reels-grid.lanes-count-4 { grid-template-columns: repeat(4, minmax(0, 280px)); justify-content: center; }
+.reels-grid.lanes-count-3 { grid-template-columns: repeat(3, minmax(0, 280px)); justify-content: center; }
+.reels-grid.lanes-count-2 { grid-template-columns: repeat(2, minmax(0, 280px)); justify-content: center; }
+.reels-grid.lanes-count-1 { grid-template-columns: minmax(0, 280px); justify-content: center; }
+
+.reel-slot {
+  position: relative;
+  min-width: 0;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+}
+
+.reel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 34px;
+  padding: 0 10px;
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--line);
+}
+
+.reel-lane {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.reel-lane svg {
+  width: 14px;
+  height: 14px;
+}
+
+.reel-lane-full {
+  font-size: var(--fs-xs);
+  color: var(--mute);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Portraits are small source files, so the window stays square near their real size */
+.slot-window {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.slot-strip {
+  height: 100%;
+  will-change: transform;
+}
+
+.reel-card {
+  position: relative;
+  height: 100%;
+}
+
+.idle-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--surface);
+  color: var(--mute);
+}
+
+.idle-icon svg {
+  width: 44px;
+  height: 44px;
+  stroke-width: 1.2;
+}
+
+.idle-label {
+  font-size: var(--fs-sm);
+}
+
+.reel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.reel-card .tier-medal {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 34px;
+  height: 26px;
+  font-size: var(--fs-lg);
+}
+
+.reel-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 12px 10px;
+  background: linear-gradient(transparent, rgba(5, 9, 20, 0.95));
+}
+
+.reel-name {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  line-height: 1.05;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reel-role {
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
+}
+
+.reel-open {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: none;
+  border: 0;
+}
+
+.reel-open:hover {
+  box-shadow: inset 0 0 0 2px var(--gilt-pale);
+}
+
+.reel-open:focus-visible {
+  outline-offset: -3px;
+}
+
+/* Signature: a gilt seam sweeps around the frame when an S+ lands */
+@property --sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.reel-slot.legendary-glow {
+  border-color: var(--gilt);
+}
+
+.reel-slot.legendary-glow .reel-head {
+  background: var(--gilt-deep);
+}
+
+.reel-slot.legendary-glow .reel-lane-full {
+  color: var(--gilt-pale);
+}
+
+.reel-slot.legendary-glow::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: 3;
+  padding: 2px;
+  border-radius: var(--radius);
+  background: conic-gradient(from var(--sweep), var(--gilt-pale), var(--ember) 18%, var(--gilt) 36%, transparent 62%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  pointer-events: none;
+  animation: gildSweep 1.1s var(--ease-out) forwards;
+}
+
+.reel-slot.legendary-glow.is-settled::after {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes gildSweep {
+  from { --sweep: 0deg; opacity: 1; }
+  80% { opacity: 1; }
+  to { --sweep: 360deg; opacity: 0; }
+}
+
+/* Result line keeps its height so the reels never jump */
+.result-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: 1400px;
+  min-height: 52px;
+  margin: 0 auto;
+}
+
+.result-hint {
+  font-size: var(--fs-md);
+  color: var(--ink-2);
+}
+
+.result-text h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.result-line.is-gold .result-text h3 {
+  color: var(--gilt);
+}
+
+.result-text p {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
+/* History */
+.gacha-archive {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 18px 20px 48px;
+}
+
+.archive-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 34px;
+  margin-bottom: 10px;
+}
+
+.archive-header h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+}
+
+.ctl-btn[hidden] {
+  display: none;
+}
+
+.archive-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  max-height: 420px;
+  overflow-y: auto;
+}
+
+.archive-item {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.archive-item-header {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.archive-mode-tag {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+}
+
+.special-record .archive-mode-tag {
+  color: var(--gilt);
+}
+
+.archive-time {
+  font-size: var(--fs-xs);
+  color: var(--mute);
+}
+
+.archive-heroes-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.archive-hero-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 3px 8px 3px 3px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.archive-hero-chip:hover {
+  border-color: var(--gilt);
+}
+
+.chip-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.archive-empty {
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  color: var(--mute);
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1100px) {
+  .btn-big-roll {
+    margin-left: 0;
+    flex: 1 1 100%;
+    order: 4;
+  }
+
+  .reel-lane-full {
+    display: none;
+  }
+
+  .reel-name {
+    font-size: var(--fs-xl);
+  }
+}
+
+@media (max-width: 760px) {
+  .gacha-stage {
+    padding: 12px;
+  }
+
+  .gacha-title {
+    display: none;
+  }
+
+  .gacha-controls .seg {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .gacha-controls .seg-btn {
+    flex: 1 0 auto;
+    height: 44px;
+  }
+
+  .chip-ui {
+    height: 44px;
+  }
+
+  .btn-big-roll {
+    height: 52px;
+  }
+
+  .reels-grid.lanes-count-5 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .reels-grid.lanes-count-5 .reel-slot {
+    grid-column: span 2;
+  }
+
+  /* Five reels: three on top, two centred below */
+  .reels-grid.lanes-count-5 .reel-slot:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .reels-grid.lanes-count-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reels-grid.lanes-count-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .reels-grid.lanes-count-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .reels-grid {
+    gap: 6px;
+  }
+
+  .reel-head {
+    height: 28px;
+    padding: 0 6px;
+  }
+
+  .reel-lane {
+    font-size: var(--fs-md);
+  }
+
+  .reel-card .tier-medal {
+    top: 4px;
+    right: 4px;
+    min-width: 26px;
+    height: 20px;
+    font-size: var(--fs-sm);
+  }
+
+  .reel-caption {
+    padding: 22px 6px 5px;
+  }
+
+  .reel-name {
+    font-size: var(--fs-lg);
+  }
+
+  .reel-role {
+    display: none;
+  }
+
+  .result-line {
+    min-height: 72px;
+  }
+
+  .gacha-archive {
+    padding: 14px 12px 88px;
+  }
+
+  .archive-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .archive-item-header {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+}

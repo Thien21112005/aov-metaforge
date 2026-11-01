@@ -60,8 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // 5. Global Hero Detail Modal
   initHeroDetailModal();
 
-  // 6. Interactive Specular Button Ripples
-  initButtonEffects();
 });
 
 function initLanguageSwitch() {
@@ -318,30 +316,4 @@ function showHeroDetail(hero) {
   });
 
   modal.classList.add("open");
-}
-
-/**
- * Interactive Button Ripples
- */
-function initButtonEffects() {
-  document.addEventListener("click", (e) => {
-    const btn = e.target.closest(".btn-big-roll, .mode-btn, .btn-step-nav");
-    if (!btn) return;
-
-    const rect = btn.getBoundingClientRect();
-    const circle = document.createElement("span");
-    const diameter = Math.max(rect.width, rect.height);
-    const radius = diameter / 2;
-
-    circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${e.clientX - rect.left - radius}px`;
-    circle.style.top = `${e.clientY - rect.top - radius}px`;
-    circle.classList.add("btn-ripple");
-
-    const existing = btn.querySelector(".btn-ripple");
-    if (existing) existing.remove();
-
-    btn.appendChild(circle);
-    setTimeout(() => circle.remove(), 600);
-  });
 }

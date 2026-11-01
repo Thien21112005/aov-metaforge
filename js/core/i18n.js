@@ -49,7 +49,7 @@ const I18N_STRINGS = {
     "gacha.pickLane": "Đường cần quay",
     "gacha.anyLane": "Đường ngẫu nhiên",
     "gacha.roll": "Quay đội hình",
-    "gacha.rollAgain": "Quay lại",
+    "gacha.rollAgain": "Quay lần nữa",
     "gacha.rolling": "Đang quay…",
     "gacha.ready": "Sẵn sàng",
     "gacha.openHero": "Xem chiêu thức của {name}",
