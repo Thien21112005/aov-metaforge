@@ -400,6 +400,18 @@
 
   .catalog-bar .text-input {
     flex: 1 1 100%;
+    height: 44px;
+  }
+
+  .catalog-bar .lane-filters {
+    width: 100%;
+  }
+
+  .catalog-bar .lane-filters .seg-btn {
+    flex: 1;
+    justify-content: center;
+    height: 44px;
+    padding: 0 4px;
   }
 
   .catalog-count {

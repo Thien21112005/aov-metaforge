@@ -66,6 +66,7 @@ class DraftManager {
     this.pickerGrid = document.getElementById("picker-grid");
     this.pickerSearch = document.getElementById("picker-search");
     this.pickerClose = document.getElementById("picker-close");
+    this.pickerClear = document.getElementById("picker-clear");
     this.pickerFilters = document.querySelectorAll(".picker-filter");
     this.scrimEl = document.getElementById("picker-scrim");
 
@@ -146,6 +147,12 @@ class DraftManager {
 
     this.pickerSearch?.addEventListener("input", () => this.renderHeroGrid());
     this.pickerClose?.addEventListener("click", () => this.closeSheet());
+    this.pickerClear?.addEventListener("click", () => {
+      const target = this.state.target;
+      if (!target) return;
+      this.clearSlot(target.team, target.type, target.index);
+      this.closeSheet();
+    });
     this.scrimEl?.addEventListener("click", () => this.closeSheet());
 
     this.pickerFilters.forEach((btn) => {
@@ -506,6 +513,17 @@ class DraftManager {
       } else {
         this.pickerTitle.textContent = t("picker.titlePick", { team: teamName(target.team), lane: laneShort(target.lane) });
       }
+    }
+
+    if (this.pickerClear) {
+      const manual = this.state.target;
+      const filled = manual
+        ? manual.type === "ban"
+          ? this.state[manual.team].bans[manual.index]
+          : this.state[manual.team].picks[manual.index].hero
+        : null;
+      this.pickerClear.hidden = !filled;
+      if (filled) this.pickerClear.textContent = t("draft.clear", { name: filled.name });
     }
 
     this.pickerFilters.forEach((btn) => {

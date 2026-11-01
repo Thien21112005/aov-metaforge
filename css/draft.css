@@ -167,7 +167,7 @@
 .draft-board {
   display: grid;
   grid-template-columns: minmax(250px, 320px) minmax(0, 1fr) minmax(250px, 320px);
-  height: max(620px, calc(100vh - var(--header-h) - 134px));
+  height: max(560px, calc(100vh - var(--header-h) - 150px));
 }
 
 .team-rail {
@@ -534,6 +534,15 @@
   font-size: var(--fs-xl);
   font-weight: 700;
   color: var(--gilt);
+}
+
+.picker-head-actions {
+  display: flex;
+  gap: 8px;
+}
+
+#picker-clear[hidden] {
+  display: none;
 }
 
 .picker-tools {
@@ -997,6 +1006,7 @@
     position: sticky;
     top: var(--header-h);
     z-index: 20;
+    grid-auto-flow: dense;
     grid-template-columns: 1fr 1fr;
     gap: 6px 8px;
     padding: 8px 12px;
@@ -1080,18 +1090,23 @@
     height: 24px;
   }
 
+  /* Too small for a corner button: phones clear a ban from the sheet */
   .ban-slot .slot-clear {
     display: none;
   }
 
-  /* On phones filled bans clear by tapping them and choosing again */
+  .draft-toolbar .ctl-btn,
+  .draft-toolbar .seg-btn {
+    height: 44px;
+  }
+
   .hero-picker {
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 70;
-    height: 78vh;
+    height: 78dvh;
     padding: 12px;
     background: var(--bg-raised);
     border-top: 2px solid var(--gilt);
@@ -1116,7 +1131,7 @@
   .lane-filters .seg-btn {
     flex: 1;
     justify-content: center;
-    height: 40px;
+    height: 44px;
     padding: 0 4px;
   }
 

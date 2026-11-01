@@ -177,7 +177,10 @@
             <div class="hero-picker" id="hero-picker">
               <div class="picker-head">
                 <h3 class="picker-title" id="picker-title" aria-live="polite"></h3>
-                <button class="ctl-btn" id="picker-close" data-i18n="ctl.close">Đóng</button>
+                <div class="picker-head-actions">
+                  <button class="ctl-btn" id="picker-clear" hidden></button>
+                  <button class="ctl-btn" id="picker-close" data-i18n="ctl.close">Đóng</button>
+                </div>
               </div>
               <div class="picker-tools">
                 <input type="text" id="picker-search" class="text-input" data-i18n-placeholder="picker.search" data-i18n-label="picker.search" />
