@@ -144,15 +144,15 @@
 
 .detail-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 16px;
   margin-bottom: 14px;
 }
 
 .detail-portrait {
   position: relative;
-  width: 132px;
-  height: 132px;
+  width: 200px;
+  height: 200px;
   flex-shrink: 0;
   border: 1px solid var(--gilt-deep);
 }
@@ -204,7 +204,7 @@
 }
 
 .meter-gilt {
-  background: var(--gilt);
+  background: var(--ink-2);
 }
 
 .detail-note {
@@ -235,7 +235,7 @@
   font-size: var(--fs-lg);
   font-weight: 700;
   letter-spacing: 0.02em;
-  color: var(--gilt);
+  color: var(--ink);
 }
 
 .detail-skills {
@@ -272,11 +272,11 @@
 }
 
 .skill-tab:hover .skill-icon {
-  border-color: var(--gilt-deep);
+  border-color: var(--ink-2);
 }
 
 .skill-tab.active .skill-icon {
-  border-color: var(--gilt);
+  border-color: var(--ink);
   transform: scale(1.08);
 }
 
@@ -287,7 +287,7 @@
 }
 
 .skill-tab.active .skill-tab-label {
-  color: var(--gilt);
+  color: var(--ink);
 }
 
 .skill-panel {
@@ -421,7 +421,7 @@
   .catalog-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 4px;
-    padding: 8px 12px 88px;
+    padding: 8px 12px 16px;
   }
 
   .catalog-name {
@@ -445,9 +445,14 @@
     border: 0;
   }
 
+  .detail-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .detail-portrait {
-    width: 96px;
-    height: 96px;
+    width: min(200px, 56vw);
+    height: min(200px, 56vw);
   }
 
   .detail-meta h2 {

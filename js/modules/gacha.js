@@ -158,7 +158,7 @@ class GachaManager {
       slotEl.id = `reel-slot-${index}`;
       slotEl.innerHTML = this.reelFrame(laneKey, index);
       slotEl.querySelector(".slot-strip").innerHTML = `
-        <div class="reel-card idle-card">
+        <div class="reel-card idle-card" style="${this.portalSlice(index)}">
           <span class="idle-icon">${LANE_ICONS[laneKey]}</span>
           <span class="idle-label">${t("gacha.ready")}</span>
         </div>
@@ -167,10 +167,51 @@ class GachaManager {
     });
   }
 
+  /** Slices the portal artwork across however many reels are showing. */
+  portalSlice(index) {
+    const count = this.activeLanes.length;
+    if (count < 3) return "background-size: auto, cover; background-position: 0 0, center 40%;";
+    const x = (index / (count - 1)) * 100;
+    return `background-size: auto, ${count * 100}% auto; background-position: 0 0, ${x}% 42%;`;
+  }
+
+  heroPanel(hero) {
+    const dmgKey = hero.damage_type === "magic" ? "magic" : hero.damage_type === "true_damage" ? "true" : "physical";
+    const meter = (labelKey, value) => `
+      <div class="metric-row">
+        <span class="m-label">${t(labelKey)}</span>
+        <div class="m-bar"><div class="m-fill meter-gilt" style="width:${value}%"></div></div>
+        <span class="m-val">${value}</span>
+      </div>
+    `;
+    const authored = hasAuthoredProfile(hero);
+    return `
+      <div class="reel-panel">
+        <div class="reel-tags">${hero.roles.map(roleName).join(", ")} · ${t(`dmg.${dmgKey}`)}</div>
+        <div>
+          ${meter("detail.mobility", hero.mobility || 50)}
+          ${meter("detail.cc", hero.cc_rating || 50)}
+        </div>
+        ${authored ? `<p class="reel-strength" lang="vi">${hero.strengths}</p>` : ""}
+        <ul class="reel-skills">
+          ${(hero.skills || []).map((sk, i) => `
+            <li>
+              <img class="hero-img" src="${sk.icon_url}" alt="" loading="lazy" data-initial="${i + 1}" />
+              <span class="reel-skill-text">
+                <span class="reel-skill-type">${skillTypeLabel(sk.type)}</span>
+                <span class="reel-skill-name" lang="vi">${sk.name}</span>
+              </span>
+            </li>
+          `).join("")}
+        </ul>
+      </div>
+    `;
+  }
+
   heroCard(hero) {
     return `
       <div class="reel-card">
-        ${heroImage(hero, "reel-img")}
+        ${heroImage(hero, "reel-img", true)}
         ${tierMedal(hero.tier)}
         <div class="reel-caption">
           <span class="reel-name">${hero.name}</span>
@@ -215,6 +256,8 @@ class GachaManager {
 
       const stripEl = document.getElementById(`slot-strip-${index}`);
       if (!stripEl) return;
+      // Spin in the landed square so portraits stay near their source size
+      document.getElementById(`reel-slot-${index}`)?.classList.add("is-spinning");
       stripEl.style.transition = "none";
       stripEl.style.transform = "translateY(0px)";
 
@@ -273,6 +316,7 @@ class GachaManager {
       "beforeend",
       `<button class="reel-open" data-hero-id="${hero.id}" aria-label="${t("gacha.openHero", { name: hero.name })}"></button>`
     );
+    slotEl.insertAdjacentHTML("beforeend", this.heroPanel(hero));
 
     if (isLegendary) {
       slotEl.classList.add("legendary-glow");
@@ -305,6 +349,7 @@ class GachaManager {
         "beforeend",
         `<button class="reel-open" data-hero-id="${result.hero.id}" aria-label="${t("gacha.openHero", { name: result.hero.name })}"></button>`
       );
+      slotEl.insertAdjacentHTML("beforeend", this.heroPanel(result.hero));
       this.reelsContainer.appendChild(slotEl);
     });
   }

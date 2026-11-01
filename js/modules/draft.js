@@ -181,12 +181,22 @@ class DraftManager {
 
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape") return;
-      if (this.pickerEl?.classList.contains("sheet-open")) {
+      const menu = document.getElementById("draft-menu");
+      if (menu?.open) {
+        menu.open = false;
+        menu.querySelector("summary")?.focus();
+      } else if (this.pickerEl?.classList.contains("sheet-open")) {
         this.closeSheet();
       } else if (this.state.target) {
         this.state.target = null;
         this.renderAll();
       }
+    });
+
+    // The options menu closes on any click outside it
+    document.addEventListener("click", (e) => {
+      const menu = document.getElementById("draft-menu");
+      if (menu?.open && !menu.contains(e.target)) menu.open = false;
     });
 
     document.addEventListener("aov:langchange", () => this.renderAll());
@@ -291,6 +301,7 @@ class DraftManager {
     this.renderSeam();
     this.renderTurnLine();
     this.renderClock();
+    this.renderSheetPicks();
     this.renderHeroGrid();
     this.updateAnalysis();
     this.persist();
@@ -382,7 +393,10 @@ class DraftManager {
       label = t("draft.slotPick", { team: teamName(team), lane: laneShort(lane), name: t("draft.pickNow") });
       body = `
         <span class="pick-lane">${LANE_ICONS[lane]}${laneShort(lane)}</span>
-        <span class="pick-info"><span class="pick-name pick-now">${t("draft.pickNow")}</span></span>
+        <span class="pick-info">
+          <span class="pick-name pick-now">${t("draft.pickNow")}</span>
+          <span class="pick-action">${t("draft.pickAction")}</span>
+        </span>
       `;
     } else {
       label = t("draft.emptySlot", { lane: laneShort(lane) });
@@ -589,7 +603,7 @@ class DraftManager {
   }
 
   setBackgroundInert(inert) {
-    [this.banBarEl, document.querySelector(".draft-toolbar"), ...document.querySelectorAll(".team-rail"), this.seamEl, this.verdictStripEl, document.getElementById("draft-analysis"), document.querySelector(".app-header")]
+    [this.banBarEl, ...document.querySelectorAll(".team-rail"), this.seamEl, this.verdictStripEl, document.getElementById("draft-analysis"), document.querySelector(".app-header")]
       .forEach((el) => {
         if (el) el.inert = inert;
       });
@@ -676,6 +690,7 @@ class DraftManager {
     const summary = this.analyzer.update(
       this.state,
       this.getUsedHeroIds(),
+      this.getCurrentActiveSlot(),
       this.analysisContainer,
       this.blueMetricsEl,
       this.redMetricsEl
@@ -723,6 +738,23 @@ class DraftManager {
     }, 1000);
   }
 
+  /** Both teams at a glance inside the phone sheet. */
+  renderSheetPicks() {
+    const el = document.getElementById("sheet-picks");
+    if (!el) return;
+    const target = this.getTarget();
+    el.innerHTML = ["blue", "red"]
+      .map((team) =>
+        this.state[team].picks
+          .map((pick, index) => {
+            const now = target?.type === "pick" && target.team === team && target.index === index;
+            return `<div class="sheet-pick team-${team} ${now ? "is-now" : ""}">${pick.hero ? heroImage(pick.hero) : ""}</div>`;
+          })
+          .join("")
+      )
+      .join("");
+  }
+
   renderClock() {
     if (!this.clockEl) return;
     const auto = this.getCurrentActiveSlot();
@@ -741,6 +773,8 @@ class DraftManager {
     } else {
       this.clockEl.textContent = `0:${String(this.secondsLeft).padStart(2, "0")}`;
     }
+    const sheetClock = document.getElementById("sheet-clock");
+    if (sheetClock) sheetClock.textContent = this.clockEl.textContent;
   }
 
   // ---------- Persistence: ids only, so refreshed hero data always wins ----------

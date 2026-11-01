@@ -258,10 +258,12 @@ function showHeroDetail(hero) {
 
     ${note ? `<p class="detail-note">${note}</p>` : ""}
 
-    <div class="detail-prose" lang="vi">
-      <p><strong>${t("detail.strengths")}:</strong> ${hero.strengths}</p>
-      <p><strong>${t("detail.weaknesses")}:</strong> ${hero.weaknesses}</p>
-    </div>
+    ${hasAuthoredProfile(hero) ? `
+      <div class="detail-prose" lang="vi">
+        <p><strong>${t("detail.strengths")}:</strong> ${hero.strengths}</p>
+        <p><strong>${t("detail.weaknesses")}:</strong> ${hero.weaknesses}</p>
+      </div>
+    ` : ""}
 
     ${skillsHtml}
 

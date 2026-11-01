@@ -200,6 +200,13 @@ input::placeholder {
   transition: color 0.15s ease;
 }
 
+.app-footer {
+  padding: 16px 20px 24px;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-xs);
+  color: var(--mute);
+}
+
 .nav-tab svg {
   width: 18px;
   height: 18px;
@@ -253,8 +260,9 @@ input::placeholder {
 }
 
 .ctl-btn.is-on {
-  border-color: var(--gilt-deep);
-  color: var(--gilt);
+  background: var(--surface-3);
+  border-color: var(--line-strong);
+  color: var(--ink);
 }
 
 #btn-toggle-sound:not(.is-on) .sound-wave {
@@ -285,7 +293,7 @@ input::placeholder {
 
 .lang-btn.active {
   background: var(--surface-3);
-  color: var(--gilt);
+  color: var(--ink);
 }
 
 .lang-btn:focus-visible {
@@ -293,13 +301,13 @@ input::placeholder {
 }
 
 .tier-medal {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 26px;
-  height: 20px;
-  padding: 0 5px;
-  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
+  min-width: 32px;
+  height: 22px;
+  padding: 0 7px;
   font-family: var(--font-display);
   font-size: var(--fs-sm);
   font-weight: 800;
@@ -307,10 +315,25 @@ input::placeholder {
   color: var(--on-gilt);
 }
 
-.tier-splus { background: var(--tier-splus); }
-.tier-s { background: var(--tier-s); }
-.tier-a { background: var(--tier-a); }
-.tier-b { background: var(--tier-b); }
+.tier-medal svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.medal-text {
+  position: relative;
+}
+
+.facet-light { fill: var(--m-light); }
+.facet-dark { fill: var(--m-dark); }
+.facet-plate { fill: var(--m-plate); }
+
+.tier-splus { --m-light: #f5dfa6; --m-plate: #e9be63; --m-dark: #a8833a; }
+.tier-s { --m-light: #cfc5ff; --m-plate: #a897ff; --m-dark: #6f5fd0; }
+.tier-a { --m-light: #a3c6ff; --m-plate: #5c9bff; --m-dark: #2f66c4; }
+.tier-b { --m-light: #c3cde0; --m-plate: #9daac4; --m-dark: #66738f; }
 
 .hero-img-fallback {
   display: flex;
@@ -493,7 +516,7 @@ input::placeholder {
   overflow: hidden;
 }
 
-.bar-phys { background: var(--gilt); }
+.bar-phys { background: var(--ink-2); }
 .bar-magic { background: var(--tier-s); }
 
 .m-val {
@@ -539,6 +562,10 @@ input::placeholder {
 
   .brand-title {
     font-size: var(--fs-lg);
+  }
+
+  .app-footer {
+    padding: 14px 12px 76px;
   }
 
   /* Sections sit in the thumb zone on phones */

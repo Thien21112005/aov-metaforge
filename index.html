@@ -139,25 +139,31 @@
            TAB 2: DRAFT BOARD
            =================================================== -->
       <section id="tab-banpick" class="tab-panel">
-        <div class="draft-toolbar">
-          <span class="toolbar-label" id="first-pick-label" data-i18n="draft.firstPick">Chọn trước</span>
-          <div class="seg" role="group" aria-labelledby="first-pick-label">
-            <button class="seg-btn active" id="btn-blue-first" data-i18n="team.blue">Đội Xanh</button>
-            <button class="seg-btn" id="btn-red-first" data-i18n="team.red">Đội Đỏ</button>
-          </div>
-          <button class="ctl-btn" id="btn-prev-step" data-i18n="draft.prev">Lượt trước</button>
-          <button class="ctl-btn" id="btn-next-step" data-i18n="draft.next">Lượt tiếp</button>
-          <div class="toolbar-end">
-            <button class="ctl-btn" id="btn-draft-timer" data-i18n="draft.timer">Đồng hồ</button>
-            <button class="ctl-btn" id="btn-quick-meta-fill" data-i18n="draft.sample">Tình huống mẫu</button>
-            <button class="ctl-btn" id="btn-reset-banpick" data-i18n="draft.reset">Đặt lại</button>
-          </div>
-        </div>
-
         <div class="draft-ban-bar" id="draft-ban-bar">
           <div class="bans-row" id="blue-bans"></div>
           <div class="turn-clock">
-            <span class="clock-time" id="draft-clock">0:30</span>
+            <div class="clock-row">
+              <button class="ctl-btn" id="btn-prev-step" data-i18n-label="draft.prev" data-i18n-title="draft.prev">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+              </button>
+              <div class="clock-setting"><span class="clock-time" id="draft-clock">0:30</span></div>
+              <button class="ctl-btn" id="btn-next-step" data-i18n-label="draft.next" data-i18n-title="draft.next">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+              </button>
+              <details class="draft-menu" id="draft-menu">
+                <summary class="ctl-btn" data-i18n="draft.menu">Tùy chọn</summary>
+                <div class="draft-menu-panel">
+                  <span class="toolbar-label" id="first-pick-label" data-i18n="draft.firstPick">Chọn trước</span>
+                  <div class="seg" role="group" aria-labelledby="first-pick-label">
+                    <button class="seg-btn active" id="btn-blue-first" data-i18n="team.blue">Đội Xanh</button>
+                    <button class="seg-btn" id="btn-red-first" data-i18n="team.red">Đội Đỏ</button>
+                  </div>
+                  <button class="ctl-btn" id="btn-draft-timer" data-i18n="draft.timer">Đồng hồ</button>
+                  <button class="ctl-btn" id="btn-quick-meta-fill" data-i18n="draft.sample">Tình huống mẫu</button>
+                  <button class="ctl-btn" id="btn-reset-banpick" data-i18n="draft.reset">Đặt lại</button>
+                </div>
+              </details>
+            </div>
             <span class="turn-line" id="draft-turn-line" aria-live="polite"></span>
           </div>
           <div class="bans-row" id="red-bans"></div>
@@ -181,6 +187,10 @@
                   <button class="ctl-btn" id="picker-clear" hidden></button>
                   <button class="ctl-btn" id="picker-close" data-i18n="ctl.close">Đóng</button>
                 </div>
+              </div>
+              <div class="sheet-status">
+                <div class="sheet-line"><span class="sheet-clock" id="sheet-clock"></span></div>
+                <div class="sheet-picks" id="sheet-picks"></div>
               </div>
               <div class="picker-tools">
                 <input type="text" id="picker-search" class="text-input" data-i18n-placeholder="picker.search" data-i18n-label="picker.search" />
@@ -241,6 +251,8 @@
       </section>
 
     </main>
+
+    <footer class="app-footer" data-i18n="footer.note"></footer>
   </div>
 
   <!-- HERO DETAIL -->

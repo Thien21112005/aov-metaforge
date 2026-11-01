@@ -9,7 +9,7 @@ class MetaAnalyzer {
   }
 
   /** Renders the full analysis and returns the short verdicts shown beside the board. */
-  update(state, usedIds, containerEl, blueMetricsEl, redMetricsEl) {
+  update(state, usedIds, activeSlot, containerEl, blueMetricsEl, redMetricsEl) {
     if (!containerEl) return [];
 
     const bluePicks = state.blue.picks;
@@ -40,27 +40,33 @@ class MetaAnalyzer {
       const redH = redPicks[idx].hero;
 
       if (redH && !blueH) {
-        lanesHtml += this.enemyRow(laneKey, idx, redH, usedIds);
+        const canLock = activeSlot?.team === "blue" && activeSlot.index === idx;
+        lanesHtml += this.enemyRow(laneKey, idx, redH, usedIds, canLock);
       } else if (blueH && redH) {
         const row = this.matchupRow(laneKey, blueH, redH);
         lanesHtml += row.html;
         summary.push(row.summary);
-      } else if (!blueH && !redH) {
-        const topMeta = HEROES_DATABASE.find(
+      }
+
+      // Suggestions only for the slot Blue may fill right now, strongest tier first
+      if (!blueH && activeSlot?.team === "blue" && activeSlot.index === idx) {
+        HEROES_DATABASE.filter(
           (c) =>
             !usedIds.has(c.id) &&
             (c.lane === laneKey || c.secondary_lane === laneKey) &&
             (c.tier === "S+" || c.tier === "S")
-        );
-        if (topMeta) {
-          suggestionHtml += `
-            <button class="counter-chip" data-quick-pick="${topMeta.id}" data-pick-index="${idx}" aria-label="${t("analysis.lockFor", { name: topMeta.name })}">
-              ${heroImage(topMeta, "chip-img")}
-              <span class="chip-name">${topMeta.name}</span>
-              <span class="chip-lane">${laneShort(laneKey)}</span>
-            </button>
-          `;
-        }
+        )
+          .sort(compareHeroes)
+          .slice(0, 3)
+          .forEach((c) => {
+            suggestionHtml += `
+              <button class="counter-chip" data-quick-pick="${c.id}" data-pick-index="${idx}" aria-label="${t("analysis.lockFor", { name: c.name })}">
+                ${heroImage(c, "chip-img")}
+                <span class="chip-name">${c.name}</span>
+                ${tierMedal(c.tier)}
+              </button>
+            `;
+          });
       }
     });
 
@@ -84,7 +90,7 @@ class MetaAnalyzer {
     return summary.slice(0, 3);
   }
 
-  enemyRow(laneKey, idx, redH, usedIds) {
+  enemyRow(laneKey, idx, redH, usedIds, canLock) {
     const inLane = (c) => !usedIds.has(c.id) && (c.lane === laneKey || c.secondary_lane === laneKey);
     const direct = HEROES_DATABASE.filter(
       (c) => inLane(c) && (redH.countered_by?.includes(c.id) || c.counters?.includes(redH.id))
@@ -112,12 +118,18 @@ class MetaAnalyzer {
           ${counterList.length ? `
             <p class="bar-label">${t("analysis.counterPicks")}</p>
             <div class="counter-chips">
-              ${counterList.map((c) => `
+              ${counterList.map((c) => canLock ? `
                 <button class="counter-chip" data-quick-pick="${c.id}" data-pick-index="${idx}" aria-label="${t("analysis.lockFor", { name: c.name })}">
                   ${heroImage(c, "chip-img")}
                   <span class="chip-name">${c.name}</span>
                   ${tierMedal(c.tier)}
                 </button>
+              ` : `
+                <span class="counter-chip is-info">
+                  ${heroImage(c, "chip-img")}
+                  <span class="chip-name">${c.name}</span>
+                  ${tierMedal(c.tier)}
+                </span>
               `).join("")}
             </div>
           ` : ""}

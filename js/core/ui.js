@@ -19,20 +19,36 @@ const UI_ICONS = {
   next: svgIcon('<path d="M9 5l7 7-7 7"/>'),
 };
 
-const heroImage = (hero, className = "") =>
-  `<img class="hero-img ${className}" src="${hero.avatar}" alt="" loading="lazy" data-initial="${hero.name.charAt(0)}" />`;
+const heroImage = (hero, className = "", eager = false) =>
+  `<img class="hero-img ${className}" src="${hero.avatar}" alt="" ${eager ? "" : 'loading="lazy"'} data-initial="${hero.name.charAt(0)}" />`;
 
 const tierClass = (tier) => `tier-${String(tier).replace("+", "plus").toLowerCase()}`;
 
-const tierMedal = (tier) => `<span class="tier-medal ${tierClass(tier)}">${tier}</span>`;
+const tierMedal = (tier) => `
+  <span class="tier-medal ${tierClass(tier)}">
+    <svg viewBox="0 0 36 24" preserveAspectRatio="none" aria-hidden="true">
+      <polygon class="facet-light" points="8,0 28,0 36,12 30,12 25,5 11,5 6,12 0,12" />
+      <polygon class="facet-dark" points="0,12 6,12 11,19 25,19 30,12 36,12 28,24 8,24" />
+      <polygon class="facet-plate" points="11,5 25,5 30,12 25,19 11,19 6,12" />
+    </svg>
+    <span class="medal-text">${tier}</span>
+  </span>`;
 
 const laneShort = (lane) => t(`short.${lane}`);
 const laneName = (lane) => t(`lane.${lane}`);
-const roleName = (role) => t(`role.${role}`);
+const roleName = (role) => {
+  const label = t(`role.${role}`);
+  return label === `role.${role}` ? role : label;
+};
 const teamName = (team) => t(`team.${team}`);
 
 function isReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+/** About 100 heroes still carry placeholder text from the data sync; don't feature it. */
+function hasAuthoredProfile(hero) {
+  return !/^Tướng vị trí \S+, bộ kỹ năng cân bằng/.test(hero.strengths || "");
 }
 
 function findHero(id) {

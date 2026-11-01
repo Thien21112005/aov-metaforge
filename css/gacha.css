@@ -5,11 +5,10 @@
 .gacha-stage {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 14px 20px 18px;
-  background:
-    linear-gradient(rgba(10, 18, 36, 0.8), rgba(10, 18, 36, 0.94)),
-    url("../assets/images/gacha_portal_core.jpg") center 40% / cover;
+  gap: 12px;
+  /* One frame height for idle, spinning and landed */
+  height: clamp(700px, calc(100vh - var(--header-h)), 860px);
+  padding: 12px 20px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -30,17 +29,14 @@
   margin-right: 8px;
 }
 
-.gacha-controls .seg {
-  background: rgba(10, 18, 36, 0.7);
-}
-
 .gacha-controls .seg-btn {
   height: 40px;
 }
 
 .gacha-controls .seg-btn.active {
   background: var(--surface-3);
-  color: var(--gilt);
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--gilt);
 }
 
 .lane-select {
@@ -82,7 +78,7 @@
   gap: 6px;
   height: 40px;
   padding: 0 12px;
-  background: rgba(10, 18, 36, 0.7);
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   font-size: var(--fs-sm);
@@ -98,7 +94,7 @@
 .custom-lane-chip input:checked + .chip-ui {
   background: var(--surface-3);
   border-color: var(--gilt-deep);
-  color: var(--gilt);
+  color: var(--ink);
 }
 
 .custom-lane-chip input:focus-visible + .chip-ui {
@@ -134,6 +130,8 @@
 
 /* Reels */
 .reels-grid {
+  flex: 1;
+  min-height: 0;
   display: grid;
   gap: 10px;
   width: 100%;
@@ -149,9 +147,13 @@
 
 .reel-slot {
   position: relative;
+  display: flex;
+  flex-direction: column;
   min-width: 0;
-  background: var(--bg);
-  border: 1px solid var(--line-strong);
+  min-height: 0;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--gilt-deep);
   border-radius: var(--radius);
 }
 
@@ -173,6 +175,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-lg);
   font-weight: 700;
+  text-transform: uppercase;
   color: var(--ink);
 }
 
@@ -192,8 +195,22 @@
 /* Portraits are small source files, so the window stays square near their real size */
 .slot-window {
   position: relative;
-  aspect-ratio: 1;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
+}
+
+/* Below the spinning window, the portal stays lit until the hero lands */
+.reel-slot.is-spinning:not(.slot-landed) {
+  background:
+    linear-gradient(rgba(16, 28, 56, 0.35), rgba(16, 28, 56, 0.85)),
+    url("../assets/images/gacha_portal_core.jpg") center 45% / cover;
+}
+
+.slot-landed .slot-window,
+.is-spinning .slot-window {
+  flex: none;
+  aspect-ratio: 1;
 }
 
 .slot-strip {
@@ -206,24 +223,127 @@
   height: 100%;
 }
 
+/* Before a roll, the empty windows look through to one continuous portal */
 .idle-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--surface);
-  color: var(--mute);
+  justify-content: flex-end;
+  gap: 2px;
+  padding-bottom: 12px;
+  background-image:
+    linear-gradient(transparent 62%, rgba(5, 9, 20, 0.85)),
+    url("../assets/images/gacha_portal_core.jpg");
+  background-repeat: no-repeat;
+  color: var(--ink);
 }
 
 .idle-icon svg {
-  width: 44px;
-  height: 44px;
-  stroke-width: 1.2;
+  display: block;
+  width: 24px;
+  height: 24px;
 }
 
 .idle-label {
   font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+/* Real hero data under the portrait, so the column ends at the fold */
+.reel-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: 10px 12px 12px;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.reel-panel[hidden] {
+  display: none;
+}
+
+.reel-tags {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.reel-panel .metric-row {
+  min-height: 20px;
+  font-size: var(--fs-xs);
+}
+
+.reel-panel .m-label {
+  width: 72px;
+}
+
+.reel-strength {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+@media (max-height: 840px) {
+  .reel-strength {
+    -webkit-line-clamp: 2;
+  }
+
+  .reel-skills img,
+  .reel-skills .hero-img-fallback {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.reel-skills {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 4px;
+  min-height: 0;
+  list-style: none;
+}
+
+.reel-skills li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.reel-skills img,
+.reel-skills .hero-img-fallback {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  font-size: var(--fs-sm);
+}
+
+.reel-skill-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.reel-skill-type {
+  font-size: var(--fs-xs);
+  color: var(--mute);
+}
+
+.reel-skill-name {
+  color: var(--ink);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .reel-img {
@@ -296,11 +416,7 @@
 }
 
 .reel-slot.legendary-glow .reel-head {
-  background: var(--gilt-deep);
-}
-
-.reel-slot.legendary-glow .reel-lane-full {
-  color: var(--gilt-pale);
+  border-bottom-color: var(--gilt);
 }
 
 .reel-slot.legendary-glow::after {
@@ -310,7 +426,7 @@
   z-index: 3;
   padding: 2px;
   border-radius: var(--radius);
-  background: conic-gradient(from var(--sweep), var(--gilt-pale), var(--ember) 18%, var(--gilt) 36%, transparent 62%);
+  background: conic-gradient(from var(--sweep), var(--gilt-pale), var(--gilt) 36%, transparent 62%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
@@ -337,7 +453,8 @@
   gap: 16px;
   width: 100%;
   max-width: 1400px;
-  min-height: 52px;
+  height: 52px;
+  flex-shrink: 0;
   margin: 0 auto;
 }
 
@@ -355,6 +472,10 @@
 
 .result-line.is-gold .result-text h3 {
   color: var(--gilt);
+}
+
+.result-line .ctl-btn {
+  flex-shrink: 0;
 }
 
 .result-text p {
@@ -416,10 +537,6 @@
   font-family: var(--font-display);
   font-size: var(--fs-lg);
   font-weight: 700;
-}
-
-.special-record .archive-mode-tag {
-  color: var(--gilt);
 }
 
 .archive-time {
@@ -560,16 +677,30 @@
     font-size: var(--fs-lg);
   }
 
-  .reel-role {
+  .reel-role,
+  .reel-panel {
     display: none;
   }
 
+  .gacha-stage {
+    height: auto;
+  }
+
+  .reels-grid {
+    flex: none;
+  }
+
+  .slot-window {
+    flex: none;
+    aspect-ratio: 1;
+  }
+
   .result-line {
-    min-height: 72px;
+    height: 76px;
   }
 
   .gacha-archive {
-    padding: 14px 12px 88px;
+    padding: 14px 12px 16px;
   }
 
   .archive-item {
