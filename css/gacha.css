@@ -200,11 +200,10 @@
   overflow: hidden;
 }
 
-/* Below the spinning window, the portal stays lit until the hero lands */
+/* Below the spinning window, the same continuous portal stays lit until the hero lands */
 .reel-slot.is-spinning:not(.slot-landed) {
-  background:
-    linear-gradient(rgba(16, 28, 56, 0.35), rgba(16, 28, 56, 0.85)),
-    url("../assets/images/gacha_portal_core.jpg") center 45% / cover;
+  background-image: linear-gradient(transparent, transparent), url("../assets/images/gacha_portal_core.jpg");
+  background-repeat: no-repeat;
 }
 
 .slot-landed .slot-window,

@@ -17,6 +17,16 @@ class GachaManager {
     this.renderReels();
     this.renderResult();
     this.renderArchiveList();
+    this.preloadPortraits();
+  }
+
+  /** The first spin should show faces, not cells still waiting on the network. */
+  preloadPortraits() {
+    const load = () => HEROES_DATABASE.forEach((h) => {
+      new Image().src = h.avatar;
+    });
+    if (window.requestIdleCallback) requestIdleCallback(load);
+    else setTimeout(load, 500);
   }
 
   initElements() {
@@ -257,7 +267,11 @@ class GachaManager {
       const stripEl = document.getElementById(`slot-strip-${index}`);
       if (!stripEl) return;
       // Spin in the landed square so portraits stay near their source size
-      document.getElementById(`reel-slot-${index}`)?.classList.add("is-spinning");
+      const reelEl = document.getElementById(`reel-slot-${index}`);
+      if (reelEl) {
+        reelEl.classList.add("is-spinning");
+        reelEl.style.cssText = this.portalSlice(index);
+      }
       stripEl.style.transition = "none";
       stripEl.style.transform = "translateY(0px)";
 
@@ -311,6 +325,7 @@ class GachaManager {
     stripEl.style.transform = "none";
     stripEl.innerHTML = this.heroCard(hero);
 
+    slotEl.style.cssText = "";
     slotEl.classList.add("slot-landed");
     slotEl.querySelector(".slot-window").insertAdjacentHTML(
       "beforeend",
