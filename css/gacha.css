@@ -200,10 +200,56 @@
   overflow: hidden;
 }
 
-/* Below the spinning window, the same continuous portal stays lit until the hero lands */
-.reel-slot.is-spinning:not(.slot-landed) {
-  background-image: linear-gradient(transparent, transparent), url("../assets/images/gacha_portal_core.jpg");
-  background-repeat: no-repeat;
+/* While a reel spins, its panel waits in the same shape the hero data will fill */
+.reel-panel.is-waiting {
+  animation: panelWait 1.2s ease-in-out infinite alternate;
+}
+
+.wait-bar {
+  display: block;
+  height: 8px;
+  background: var(--surface-3);
+  border-radius: var(--radius);
+}
+
+.wait-bar.is-tag {
+  width: 60%;
+  height: 12px;
+}
+
+.wait-meters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.reel-skills .wait-dot {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background: var(--surface-3);
+  border-radius: 50%;
+}
+
+.wait-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wait-lines .wait-bar:first-child {
+  width: 40%;
+}
+
+.wait-lines .wait-bar:last-child {
+  width: 75%;
+}
+
+@keyframes panelWait {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
 }
 
 .slot-landed .slot-window,

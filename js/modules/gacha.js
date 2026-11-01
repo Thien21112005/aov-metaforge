@@ -185,6 +185,22 @@ class GachaManager {
     return `background-size: auto, ${count * 100}% auto; background-position: 0 0, ${x}% 42%;`;
   }
 
+  waitingPanel() {
+    const skillRow = `
+      <li>
+        <span class="wait-dot"></span>
+        <span class="wait-lines"><span class="wait-bar"></span><span class="wait-bar"></span></span>
+      </li>
+    `;
+    return `
+      <div class="reel-panel is-waiting" aria-hidden="true">
+        <span class="wait-bar is-tag"></span>
+        <div class="wait-meters"><span class="wait-bar"></span><span class="wait-bar"></span></div>
+        <ul class="reel-skills">${skillRow.repeat(4)}</ul>
+      </div>
+    `;
+  }
+
   heroPanel(hero) {
     const dmgKey = hero.damage_type === "magic" ? "magic" : hero.damage_type === "true_damage" ? "true" : "physical";
     const meter = (labelKey, value) => `
@@ -270,7 +286,7 @@ class GachaManager {
       const reelEl = document.getElementById(`reel-slot-${index}`);
       if (reelEl) {
         reelEl.classList.add("is-spinning");
-        reelEl.style.cssText = this.portalSlice(index);
+        reelEl.insertAdjacentHTML("beforeend", this.waitingPanel());
       }
       stripEl.style.transition = "none";
       stripEl.style.transform = "translateY(0px)";
@@ -325,7 +341,7 @@ class GachaManager {
     stripEl.style.transform = "none";
     stripEl.innerHTML = this.heroCard(hero);
 
-    slotEl.style.cssText = "";
+    slotEl.querySelector(".reel-panel.is-waiting")?.remove();
     slotEl.classList.add("slot-landed");
     slotEl.querySelector(".slot-window").insertAdjacentHTML(
       "beforeend",
