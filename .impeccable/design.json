@@ -1,0 +1,683 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-01T02:52:19Z",
+  "title": "Design System: AOV MetaForge",
+  "extensions": {
+    "colorMeta": {
+      "gilt": {
+        "role": "primary",
+        "displayName": "Forged Gilt",
+        "tonalRamp": [
+          "#120900",
+          "#322200",
+          "#553e00",
+          "#7c5b03",
+          "#a47b11",
+          "#c89e41",
+          "#e7c47e",
+          "#fcedcf"
+        ]
+      },
+      "gilt-pale": {
+        "role": "primary",
+        "displayName": "Pale Gilt",
+        "tonalRamp": [
+          "#110a00",
+          "#302300",
+          "#523f01",
+          "#735f28",
+          "#95804a",
+          "#b8a36c",
+          "#d9c89b",
+          "#f6eedb"
+        ]
+      },
+      "gilt-deep": {
+        "role": "primary",
+        "displayName": "Deep Gilt",
+        "tonalRamp": [
+          "#130900",
+          "#322200",
+          "#573d00",
+          "#7b5b19",
+          "#9d7d3e",
+          "#c2a061",
+          "#e1c593",
+          "#f9edd7"
+        ]
+      },
+      "on-gilt": {
+        "role": "primary",
+        "displayName": "On Gilt",
+        "tonalRamp": [
+          "#0f0a03",
+          "#2b2415",
+          "#494131",
+          "#69604f",
+          "#8a816f",
+          "#ada491",
+          "#d0c8b9",
+          "#f1eee7"
+        ]
+      },
+      "ember": {
+        "role": "secondary",
+        "displayName": "Heated Ember",
+        "tonalRamp": [
+          "#180600",
+          "#3b1c00",
+          "#643400",
+          "#904e00",
+          "#bf6904",
+          "#ec8926",
+          "#ffb87f",
+          "#feeadb"
+        ]
+      },
+      "blue": {
+        "role": "tertiary",
+        "displayName": "Team Blue",
+        "tonalRamp": [
+          "#00072a",
+          "#002058",
+          "#003b8f",
+          "#1f5cbb",
+          "#4280e1",
+          "#6da5fe",
+          "#aacbfe",
+          "#e6effe"
+        ]
+      },
+      "blue-field": {
+        "role": "tertiary",
+        "displayName": "Blue Field",
+        "tonalRamp": [
+          "#020922",
+          "#112349",
+          "#2c416a",
+          "#4b618c",
+          "#6b82b0",
+          "#8ca5d5",
+          "#b5caf2",
+          "#e7effe"
+        ]
+      },
+      "blue-line": {
+        "role": "tertiary",
+        "displayName": "Blue Line",
+        "tonalRamp": [
+          "#000430",
+          "#001d5e",
+          "#1a3e81",
+          "#395fa5",
+          "#5981cb",
+          "#7aa5f1",
+          "#adcafe",
+          "#e6effe"
+        ]
+      },
+      "red": {
+        "role": "tertiary",
+        "displayName": "Team Red",
+        "tonalRamp": [
+          "#200001",
+          "#4d000b",
+          "#80001a",
+          "#b11c2f",
+          "#da4850",
+          "#fe7274",
+          "#feb2b0",
+          "#fee9e7"
+        ]
+      },
+      "red-field": {
+        "role": "tertiary",
+        "displayName": "Oxblood Field",
+        "tonalRamp": [
+          "#140512",
+          "#341b2f",
+          "#53384d",
+          "#73566e",
+          "#96778f",
+          "#ba9ab3",
+          "#dbc0d5",
+          "#f6eaf4"
+        ]
+      },
+      "red-line": {
+        "role": "tertiary",
+        "displayName": "Red Line",
+        "tonalRamp": [
+          "#1f0007",
+          "#4a011d",
+          "#6d2439",
+          "#914558",
+          "#b76679",
+          "#dd899b",
+          "#fab3c1",
+          "#fee8ec"
+        ]
+      },
+      "tier-splus": {
+        "role": "tertiary",
+        "displayName": "S+ Gilt",
+        "tonalRamp": [
+          "#120900",
+          "#322200",
+          "#553e00",
+          "#7c5b03",
+          "#a47b11",
+          "#c89e41",
+          "#e7c47e",
+          "#fcedcf"
+        ]
+      },
+      "tier-s": {
+        "role": "tertiary",
+        "displayName": "S Violet",
+        "tonalRamp": [
+          "#0e002e",
+          "#2a0166",
+          "#442b89",
+          "#624dae",
+          "#8270d4",
+          "#a493fb",
+          "#c7c0ff",
+          "#eeecfe"
+        ]
+      },
+      "tier-a": {
+        "role": "tertiary",
+        "displayName": "A Blue",
+        "tonalRamp": [
+          "#00072a",
+          "#002058",
+          "#003b8f",
+          "#1f5cbb",
+          "#4280e1",
+          "#6da5fe",
+          "#aacbfe",
+          "#e6effe"
+        ]
+      },
+      "tier-b": {
+        "role": "tertiary",
+        "displayName": "B Steel",
+        "tonalRamp": [
+          "#050b18",
+          "#1b2539",
+          "#374258",
+          "#566179",
+          "#76839b",
+          "#98a5bf",
+          "#bfc9df",
+          "#eaeff8"
+        ]
+      },
+      "bg": {
+        "role": "neutral",
+        "displayName": "Midnight Lapis",
+        "tonalRamp": [
+          "#060b17",
+          "#1c2538",
+          "#384257",
+          "#566178",
+          "#77829a",
+          "#99a5be",
+          "#bfc9de",
+          "#eaeff8"
+        ]
+      },
+      "bg-raised": {
+        "role": "neutral",
+        "displayName": "Raised Lapis",
+        "tonalRamp": [
+          "#040a1b",
+          "#18243e",
+          "#34425e",
+          "#52617f",
+          "#7283a2",
+          "#94a5c6",
+          "#bbcae5",
+          "#e8effb"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Enamel 1",
+        "tonalRamp": [
+          "#040a1d",
+          "#172441",
+          "#334160",
+          "#516182",
+          "#7282a5",
+          "#94a5ca",
+          "#bbc9e8",
+          "#e8effc"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "Enamel 2",
+        "tonalRamp": [
+          "#020921",
+          "#132347",
+          "#2f4167",
+          "#4d6189",
+          "#6d82ad",
+          "#8fa5d2",
+          "#b7c9ef",
+          "#e7effe"
+        ]
+      },
+      "surface-3": {
+        "role": "neutral",
+        "displayName": "Enamel 3",
+        "tonalRamp": [
+          "#010726",
+          "#0f214f",
+          "#2a4070",
+          "#486093",
+          "#6881b7",
+          "#8aa5dc",
+          "#b3c9f8",
+          "#e7effe"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "tonalRamp": [
+          "#030920",
+          "#152345",
+          "#304165",
+          "#4f6187",
+          "#6f82ab",
+          "#91a5d0",
+          "#b8c9ed",
+          "#e7efff"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "tonalRamp": [
+          "#020726",
+          "#11214f",
+          "#2c3f70",
+          "#4a5f93",
+          "#6a81b8",
+          "#8ca4dd",
+          "#b4c9f8",
+          "#e7effe"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "#0a0b0e",
+          "#232529",
+          "#404246",
+          "#5f6166",
+          "#808287",
+          "#a2a5aa",
+          "#c7c9cd",
+          "#edeef0"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink 2",
+        "tonalRamp": [
+          "#070b14",
+          "#1e2533",
+          "#3a4252",
+          "#596172",
+          "#798394",
+          "#9ca5b8",
+          "#c1c9d9",
+          "#ebeff5"
+        ]
+      },
+      "mute": {
+        "role": "neutral",
+        "displayName": "Mute",
+        "tonalRamp": [
+          "#050b18",
+          "#1b2539",
+          "#374258",
+          "#566179",
+          "#76839b",
+          "#98a5bf",
+          "#bfc9df",
+          "#eaeff8"
+        ]
+      },
+      "scrim-ink": {
+        "role": "neutral",
+        "displayName": "Scrim Ink",
+        "tonalRamp": [
+          "#070b13",
+          "#1f2532",
+          "#3b4250",
+          "#5a6170",
+          "#7b8292",
+          "#9da5b6",
+          "#c2c9d7",
+          "#ebeef5"
+        ]
+      },
+      "backdrop-ink": {
+        "role": "neutral",
+        "displayName": "Backdrop Ink",
+        "tonalRamp": [
+          "#070b14",
+          "#1e2533",
+          "#3a4251",
+          "#596271",
+          "#798393",
+          "#9ca6b7",
+          "#c1cad8",
+          "#ebeff5"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero name in the detail view."
+      },
+      "clock": {
+        "displayName": "Clock",
+        "purpose": "The turn clock only, with tabular numerals."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Reel names, pick slot names, section titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Primary button, catalog names, team rail heads, result line, skill names."
+      },
+      "label-display": {
+        "displayName": "Label Display",
+        "purpose": "Nav tabs, lane heads, verdict heads, chip names."
+      },
+      "body-long": {
+        "displayName": "Body Long",
+        "purpose": "Hero prose, skill descriptions, analysis text, max 72ch."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Page default and input text."
+      },
+      "control": {
+        "displayName": "Control",
+        "purpose": "Buttons, segments, chips, metric labels."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Verdict detail, roles, skill types, timestamps, pick order."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-lift",
+        "value": "0 8px 24px rgba(3, 7, 18, 0.55)",
+        "purpose": "The draft options menu and the hero dialog only."
+      },
+      {
+        "name": "active-underline",
+        "value": "inset 0 -3px 0 var(--gilt)",
+        "purpose": "State mark on the active nav tab; 2px on the active gacha mode."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Seam heat, S+ sweep, picker sheet and skill icon scale."
+      },
+      {
+        "name": "state-hover",
+        "value": "0.12s to 0.15s ease",
+        "purpose": "Edge and colour changes on controls and tiles."
+      },
+      {
+        "name": "seam-heat",
+        "value": "0.55s var(--ease-out)",
+        "purpose": "The next seam leg heats along its length on lock-in."
+      },
+      {
+        "name": "gild-sweep",
+        "value": "1.1s var(--ease-out)",
+        "purpose": "One gilt sweep around the frame when an S+ reel lands."
+      },
+      {
+        "name": "sheet-rise",
+        "value": "0.28s var(--ease-out)",
+        "purpose": "The phone picker sheet rising over the board."
+      },
+      {
+        "name": "notice-shake",
+        "value": "0.32s ease",
+        "purpose": "Rejected move feedback."
+      },
+      {
+        "name": "reel-land",
+        "value": "0.22s power2.out",
+        "purpose": "GSAP settle for a regular reel landing."
+      },
+      {
+        "name": "splus-land",
+        "value": "0.9s power3.out",
+        "purpose": "GSAP portrait brightness settle on S+; the medal scales down over 0.5s."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "0.01ms",
+        "purpose": "All CSS motion collapses under prefers-reduced-motion, and GSAP effects are skipped."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact-header",
+        "value": "1180px"
+      },
+      {
+        "name": "roll-row",
+        "value": "1100px"
+      },
+      {
+        "name": "draft-stack",
+        "value": "900px"
+      },
+      {
+        "name": "phone",
+        "value": "760px"
+      },
+      {
+        "name": "hide-wordmark",
+        "value": "350px"
+      },
+      {
+        "name": "short-viewport-height",
+        "value": "840px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one gold action in a view: the team roll.",
+      "html": "<button class=\"ds-btn-primary\">Quay đội hình</button>",
+      "css": ".ds-btn-primary { min-width: 190px; height: 44px; padding: 0 28px; background: var(--gilt); border: 0; border-radius: var(--radius); font-family: var(--font-display); font-size: var(--fs-xl); font-weight: 800; letter-spacing: 0.03em; color: var(--on-gilt); cursor: pointer; transition: background-color 0.15s ease; } .ds-btn-primary:hover:not(:disabled) { background: var(--gilt-pale); } .ds-btn-primary:focus-visible { outline: 2px solid var(--gilt); outline-offset: 2px; } .ds-btn-primary:disabled { background: var(--gilt-deep); color: var(--ink); cursor: progress; }"
+    },
+    {
+      "name": "Control Button",
+      "kind": "button",
+      "refersTo": "button-control",
+      "description": "Recessive hairline control for every secondary action and toggle.",
+      "html": "<button class=\"ds-ctl\">Xem phân tích</button> <button class=\"ds-ctl ds-on\" aria-pressed=\"true\">Âm thanh</button>",
+      "css": ".ds-ctl { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; min-width: 34px; padding: 0 10px; background: none; border: 1px solid var(--line); border-radius: var(--radius); font-family: var(--font-body); font-size: var(--fs-sm); font-weight: 600; color: var(--ink-2); cursor: pointer; transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease; } .ds-ctl:hover { border-color: var(--line-strong); color: var(--ink); } .ds-ctl:focus-visible { outline: 2px solid var(--gilt); outline-offset: 2px; } .ds-ctl.ds-on { background: var(--surface-3); border-color: var(--line-strong); color: var(--ink); } .ds-ctl:disabled { opacity: 0.45; cursor: not-allowed; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "chip",
+      "refersTo": "segment",
+      "description": "Flush mode switch; selected fills to Enamel 3, with a 2px gilt underline in the gacha mode row.",
+      "html": "<div class=\"ds-seg\" role=\"group\"><button class=\"ds-seg-btn ds-active\" aria-pressed=\"true\">5 đường</button><button class=\"ds-seg-btn\" aria-pressed=\"false\">Bộ ba</button><button class=\"ds-seg-btn\" aria-pressed=\"false\">Cặp</button></div>",
+      "css": ".ds-seg { display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; } .ds-seg-btn { height: 40px; padding: 0 12px; border: 0; background: none; font-family: var(--font-body); font-size: var(--fs-sm); font-weight: 600; color: var(--mute); white-space: nowrap; cursor: pointer; } .ds-seg-btn:hover { color: var(--ink); } .ds-seg-btn:focus-visible { outline: 2px solid var(--gilt); outline-offset: -2px; } .ds-seg-btn.ds-active { background: var(--surface-3); color: var(--ink); box-shadow: inset 0 -2px 0 var(--gilt); }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "Enamel field with a gilt edge and caret on focus.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Tìm tướng...\" aria-label=\"Tìm tướng\" />",
+      "css": ".ds-input { min-width: 240px; height: 34px; padding: 0 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); font-family: var(--font-body); font-size: var(--fs-md); color: var(--ink); caret-color: var(--gilt); } .ds-input::placeholder { color: var(--mute); } .ds-input:hover { border-color: var(--line-strong); } .ds-input:focus { border-color: var(--gilt); outline: none; }"
+    },
+    {
+      "name": "Section Nav Tab",
+      "kind": "nav",
+      "refersTo": "nav-tab",
+      "description": "Header section tabs with drawn icons and a 3px gilt underline when active.",
+      "html": "<nav class=\"ds-nav\"><button class=\"ds-tab ds-active\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 3l14 14M19 3L5 17M3 15l6 6M21 15l-6 6\"/></svg><span>Cấm chọn</span></button><button class=\"ds-tab\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z\"/></svg><span>Tướng</span></button></nav>",
+      "css": ".ds-nav { display: flex; gap: 2px; height: 60px; background: var(--bg-raised); } .ds-tab { display: flex; align-items: center; gap: 8px; padding: 0 16px; border: 0; background: none; font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 700; letter-spacing: 0.04em; color: var(--mute); white-space: nowrap; cursor: pointer; transition: color 0.15s ease; } .ds-tab svg { width: 18px; height: 18px; flex-shrink: 0; } .ds-tab:hover { color: var(--ink); } .ds-tab:focus-visible { outline: 2px solid var(--gilt); outline-offset: -2px; } .ds-tab.ds-active { color: var(--ink); box-shadow: inset 0 -3px 0 var(--gilt); }"
+    },
+    {
+      "name": "Faceted Tier Medal",
+      "kind": "custom",
+      "description": "Three-polygon SVG plate that carries tier, in S+, S, A and B colours.",
+      "html": "<span class=\"ds-medal ds-splus\"><svg viewBox=\"0 0 36 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><polygon class=\"ds-f-light\" points=\"8,0 28,0 36,12 30,12 25,5 11,5 6,12 0,12\"/><polygon class=\"ds-f-dark\" points=\"0,12 6,12 11,19 25,19 30,12 36,12 28,24 8,24\"/><polygon class=\"ds-f-plate\" points=\"11,5 25,5 30,12 25,19 11,19 6,12\"/></svg><span class=\"ds-medal-text\">S+</span></span> <span class=\"ds-medal ds-s\"><svg viewBox=\"0 0 36 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><polygon class=\"ds-f-light\" points=\"8,0 28,0 36,12 30,12 25,5 11,5 6,12 0,12\"/><polygon class=\"ds-f-dark\" points=\"0,12 6,12 11,19 25,19 30,12 36,12 28,24 8,24\"/><polygon class=\"ds-f-plate\" points=\"11,5 25,5 30,12 25,19 11,19 6,12\"/></svg><span class=\"ds-medal-text\">S</span></span> <span class=\"ds-medal ds-a\"><svg viewBox=\"0 0 36 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><polygon class=\"ds-f-light\" points=\"8,0 28,0 36,12 30,12 25,5 11,5 6,12 0,12\"/><polygon class=\"ds-f-dark\" points=\"0,12 6,12 11,19 25,19 30,12 36,12 28,24 8,24\"/><polygon class=\"ds-f-plate\" points=\"11,5 25,5 30,12 25,19 11,19 6,12\"/></svg><span class=\"ds-medal-text\">A</span></span> <span class=\"ds-medal ds-b\"><svg viewBox=\"0 0 36 24\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><polygon class=\"ds-f-light\" points=\"8,0 28,0 36,12 30,12 25,5 11,5 6,12 0,12\"/><polygon class=\"ds-f-dark\" points=\"0,12 6,12 11,19 25,19 30,12 36,12 28,24 8,24\"/><polygon class=\"ds-f-plate\" points=\"11,5 25,5 30,12 25,19 11,19 6,12\"/></svg><span class=\"ds-medal-text\">B</span></span>",
+      "css": ".ds-medal { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 22px; padding: 0 7px; font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 800; line-height: 1; color: var(--on-gilt); } .ds-medal svg { position: absolute; inset: 0; width: 100%; height: 100%; } .ds-medal-text { position: relative; } .ds-f-light { fill: var(--m-light); } .ds-f-dark { fill: var(--m-dark); } .ds-f-plate { fill: var(--m-plate); } .ds-splus { --m-light: #f5dfa6; --m-plate: #e9be63; --m-dark: #a8833a; } .ds-s { --m-light: #cfc5ff; --m-plate: #a897ff; --m-dark: #6f5fd0; } .ds-a { --m-light: #a3c6ff; --m-plate: #5c9bff; --m-dark: #2f66c4; } .ds-b { --m-light: #c3cde0; --m-plate: #9daac4; --m-dark: #66738f; }"
+    },
+    {
+      "name": "Lane Label",
+      "kind": "chip",
+      "description": "Drawn stroke lane icon with an uppercase stamp, as on a pick slot.",
+      "html": "<span class=\"ds-lane\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z\"/></svg>Top</span> <span class=\"ds-lane\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 3l14 14M19 3L5 17M3 15l6 6M21 15l-6 6\"/></svg>Rừng</span>",
+      "css": ".ds-lane { display: inline-flex; align-items: center; gap: 4px; padding: 1px 5px; background: rgba(5, 9, 20, 0.72); font-family: var(--font-display); font-size: var(--fs-xs); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-2); } .ds-lane svg { width: 12px; height: 12px; }"
+    },
+    {
+      "name": "Hero Tile",
+      "kind": "card",
+      "refersTo": "hero-tile",
+      "description": "Whole-cell grid tile; a banned hero stays in place, greyed and struck.",
+      "html": "<div class=\"ds-tiles\"><button class=\"ds-tile\"><span class=\"ds-art\"></span><span class=\"ds-tile-name\">Valhein</span></button><button class=\"ds-tile ds-banned\" disabled><span class=\"ds-art\"></span><span class=\"ds-tile-state\">Cấm</span><span class=\"ds-tile-name\">Hayate</span></button></div>",
+      "css": ".ds-tiles { display: grid; grid-template-columns: repeat(2, 120px); gap: 4px; } .ds-tile { position: relative; aspect-ratio: 1; overflow: hidden; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); cursor: pointer; transition: border-color 0.12s ease; } .ds-tile:hover:not(:disabled) { border-color: var(--gilt); } .ds-tile:focus-visible { outline: 2px solid var(--gilt); outline-offset: -2px; } .ds-tile:disabled { cursor: not-allowed; } .ds-art { position: absolute; inset: 0; background: linear-gradient(160deg, var(--blue-line), var(--surface-3)); } .ds-tile-name { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; padding: 12px 4px 2px; background: linear-gradient(transparent, rgba(5, 9, 20, 0.95)); font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 700; line-height: 1.15; text-align: left; color: var(--ink); } .ds-tile-state { position: absolute; z-index: 1; top: 3px; left: 3px; padding: 0 4px; background: rgba(5, 9, 20, 0.85); font-size: var(--fs-xs); font-weight: 600; color: var(--red); } .ds-banned .ds-art { filter: grayscale(1) brightness(0.5); } .ds-banned::after { content: ''; position: absolute; left: -20%; right: -20%; top: 50%; height: 2px; background: var(--red); transform: rotate(-45deg); }"
+    },
+    {
+      "name": "Draft Seam",
+      "kind": "custom",
+      "description": "The snake order as a forged line: gilt when finished, ember on the one active leg.",
+      "html": "<div class=\"ds-seam\"><svg viewBox=\"0 0 300 44\" aria-hidden=\"true\"><line class=\"ds-leg ds-done\" x1=\"30\" y1=\"12\" x2=\"120\" y2=\"32\"/><line class=\"ds-leg ds-live\" x1=\"120\" y1=\"32\" x2=\"210\" y2=\"12\"/><line class=\"ds-leg\" x1=\"210\" y1=\"12\" x2=\"280\" y2=\"32\"/></svg><span class=\"ds-node ds-blue ds-done-n\" style=\"left:30px;top:12px\">1</span><span class=\"ds-node ds-red ds-done-n\" style=\"left:120px;top:32px\">2</span><span class=\"ds-node ds-now\" style=\"left:210px;top:12px\">3</span><span class=\"ds-node ds-red\" style=\"left:280px;top:32px\">4</span></div>",
+      "css": ".ds-seam { position: relative; width: 300px; height: 44px; } .ds-seam svg { position: absolute; inset: 0; width: 100%; height: 100%; } .ds-leg { stroke: var(--line-strong); stroke-width: 2; } .ds-leg.ds-done { stroke: var(--gilt); } .ds-leg.ds-live { stroke: var(--ember); stroke-width: 3; } .ds-node { position: absolute; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; transform: translate(-50%, -50%); border: 2px solid var(--line-strong); border-radius: 50%; background: var(--bg); font-family: var(--font-display); font-size: var(--fs-xs); font-weight: 700; color: var(--ink-2); } .ds-blue { border-color: var(--blue); } .ds-red { border-color: var(--red); } .ds-blue.ds-done-n { background: var(--blue); color: var(--bg); } .ds-red.ds-done-n { background: var(--red); color: var(--bg); } .ds-now { width: 24px; height: 24px; border-color: var(--ember); background: var(--ember); color: var(--bg); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Enamel Rank Medal",
+    "overview": "The whole app is struck from one rank medal: midnight lapis enamel for the ground, thin gilt for the setting, a heated seam for the only thing currently happening. It is a dense operating surface for rank players on phones and coaches on desktops, with the hero portrait as the largest thing on screen whenever the hero is the point.\n\nColour carries meaning, not mood. The ground stays quiet so that gold can mean \"act now or this is the best\", blue and red can mean a side, and ember can mean the one leg of the draft that is live. Cancelled things stay in view, like a ticket that has been punched rather than torn up.\n\nThe world refuses both the light SaaS card stack and a copy of Garena's own lobby. Density comes from whole-cell thumbnail grids and hairlines rather than padded cards, and depth comes from tonal enamel steps rather than floating panels.",
+    "keyCharacteristics": [
+      "Dark lapis ground with tonal steps, separated by 1px hairlines.",
+      "Team fields in enamel blue and oxblood flank the board.",
+      "Corners of 3px throughout; circles only for skill icons and seam nodes.",
+      "Saira Condensed for names, numerals and headings; Be Vietnam Pro for reading and controls.",
+      "Faceted SVG tier medals and drawn stroke icons, with no emoji anywhere.",
+      "Whole-cell portraits, with text carried on a dark scrim."
+    ],
+    "rules": [
+      {
+        "name": "The Gold Reservation Rule",
+        "body": "A gold fill or gold text means one of three things: the current turn, the primary action, or S+. A gacha S+ result line qualifies; a hero's tier below S+ never does. The AOV METAFORGE wordmark is the single identity exception.",
+        "section": "colors"
+      },
+      {
+        "name": "The Gilt Hairline Rule",
+        "body": "Outside that reservation, gold appears only as thin metal or a thin signal of 3px or less: deep gilt frames, the top edge of a filled pick, finished seam legs, the focus ring, the input caret and focus edge, hover edges on tiles and chips, and the underline on the active nav tab or gacha mode.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Heated Leg Rule",
+        "body": "Ember belongs to the active seam leg and its node. If two things are ember, one of them is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Side Is Colour Rule",
+        "body": "Blue and red always mean a team side, and red alone may also mean banned or at risk. Verdict heads take the colour of the side that benefits.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Voices Rule",
+        "body": "Names, numerals and headings speak in Saira Condensed at 700 or 800. Anything read as a sentence or operated as a small control speaks in Be Vietnam Pro.",
+        "section": "typography"
+      },
+      {
+        "name": "The Uppercase Is For Stamps Rule",
+        "body": "Uppercase is used only on lane labels and team rail heads. Sentences, nav and buttons keep normal case so that Vietnamese reads correctly.",
+        "section": "typography"
+      },
+      {
+        "name": "The Board Stays Rule",
+        "body": "Choosing never hides the state of the draft. Any picker over the board must carry the clock and both teams' picks with it.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Enamel Rule",
+        "body": "Tiles, cards, rails and slots carry no shadow at rest or on hover. State changes the edge colour, not the height.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Three Pixel Rule",
+        "body": "Only two radii exist: 3px and 50%. A new radius is a new world.",
+        "section": "shapes"
+      },
+      {
+        "name": "The Faceted Medal Rule",
+        "body": "Tier is always the faceted medal in its own plate colour, never a text badge, a pill or a filled circle.",
+        "section": "components"
+      },
+      {
+        "name": "The Drawn Icon Rule",
+        "body": "Every icon is a drawn stroke SVG. No emoji, no icon-font glyphs, no unicode symbols standing in for an icon.",
+        "section": "components"
+      },
+      {
+        "name": "The Struck, Not Gone Rule",
+        "body": "A banned hero stays on the board and in the grid: portrait in greyscale and dimmed, a 2px Team Red line struck corner to corner at 45 degrees, and on tiles a red state label. A picked hero stays too, greyed without the strike and labelled in its team's colour. Unavailable heroes are never removed from the grid or reordered.",
+        "section": "components"
+      },
+      {
+        "name": "The Authored Text Rule",
+        "body": "Gate hero prose with `hasAuthoredProfile`. Where a hero has no authored profile, omit the block and let skills, meters and relations fill the space. The reel panel and the detail prose follow this today; the analysis rows and the detail view's counter tips do not yet, which is drift to fix rather than precedent.",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do keep gold fills and gold text for the current turn, the primary action and S+, under the Gold Reservation Rule.",
+      "Do use gold outside that reservation only as thin metal or a thin signal of 3px or less, under the Gilt Hairline Rule.",
+      "Do keep ember on the active seam leg and its node.",
+      "Do show banned heroes greyed and struck in place, with picked heroes greyed and labelled by team.",
+      "Do use 3px corners, with 50% only for skill icons and seam nodes.",
+      "Do set names, numerals and headings in Saira Condensed, and reading text and small controls in Be Vietnam Pro.",
+      "Do show tier with the faceted SVG medal and lanes with the drawn stroke icons.",
+      "Do gate hero prose with `hasAuthoredProfile`.",
+      "Do grow touch targets to 44px on touch layouts and honour `prefers-reduced-motion`.",
+      "Do crop portraits at `center 20%` so faces survive square cells."
+    ],
+    "donts": [
+      "Don't use gold for a selected filter, a tier below S+, a metric bar or decoration. Meters use Ink 2.",
+      "Don't use ember for warnings, hover or any second accent.",
+      "Don't remove, hide or reorder a banned or picked hero.",
+      "Don't introduce a radius other than 3px or 50%, or pill shapes.",
+      "Don't use emoji, icon fonts or unicode glyphs as icons.",
+      "Don't render tier as a plain text badge.",
+      "Don't feature templated hero text as if it were authored.",
+      "Don't add shadows to tiles, cards or slots, or return to light surfaces and glass panels.",
+      "Don't imitate Garena's lobby or suggest the app is an official Garena product."
+    ]
+  }
+}

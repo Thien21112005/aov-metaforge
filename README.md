@@ -8,7 +8,7 @@
   <a href="#tiếng-việt">Tiếng Việt</a>
 </p>
 
-[![Version](https://img.shields.io/badge/version-2.4.0-blue.svg)](https://github.com/Thien21112005/aov-metaforge)
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/Thien21112005/aov-metaforge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Status: Active](https://img.shields.io/badge/status-active-emerald.svg)](https://github.com/Thien21112005/aov-metaforge)
 
@@ -18,15 +18,15 @@
 
 ## English
 
-A modern, high-performance web platform designed for Arena of Valor (Liên Quân Mobile) competitors, analysts, and coaches. Built with high visual density, smooth GSAP animations, native audio engineering, and comprehensive champion data indexed across 129+ heroes.
+A modern, high-performance web platform designed for Arena of Valor (Liên Quân Mobile) competitors, analysts, and coaches. Built around a lapis-and-gilt interface, a game-style draft board, a Vietnamese and English interface, and champion data for 129 heroes.
 
 ### Table of Contents
 - [Core Features](#core-features)
   - [1. Meta Gacha Simulator & Randomizer](#1-meta-gacha-simulator--randomizer)
   - [2. Tournament Snake Draft Arena (1-2-2-2-2-1)](#2-tournament-snake-draft-arena-1-2-2-2-2-1)
-  - [3. Real-Time Team Synergy & Counter Matrix AI](#3-real-time-team-synergy--counter-matrix-ai)
+  - [3. Rule-Based Matchup Analysis](#3-rule-based-matchup-analysis)
   - [4. Interactive Hero Compendium & 4-Skills Inspector](#4-interactive-hero-compendium--4-skills-inspector)
-  - [5. Ambient Visuals & BGM Audio Engine](#5-ambient-visuals--bgm-audio-engine)
+  - [5. Language, Music & Accessibility](#5-language-music--accessibility)
 - [Project Architecture](#project-architecture)
 - [Getting Started](#getting-started)
 - [Data Provenance & Refresh Guide](#data-provenance--refresh-guide)
@@ -39,29 +39,33 @@ A modern, high-performance web platform designed for Arena of Valor (Liên Quân
 #### 1. Meta Gacha Simulator & Randomizer
 - Multi-lane distribution algorithm allocating valid champions across 5 competitive lanes (Top, Jungle, Mid, AD, SP).
 - Supports flexible squad modes: Full Team 5v5, Trio Mid-Jungle-SP, Duo Bot AD-SP, Solo Lane, and Custom Multi-Lane filters.
-- Dynamic reel mechanics powered by hardware-accelerated CSS transforms and GSAP landing bounce animations.
+- Staggered reels land on large portraits, with a gilt sweep for S+ heroes and a result line that never shifts the layout.
+- Copy the rolled team as text, or screenshot the result screen.
 - Interactive result inspection: Click any landed hero card or archive record to open the detailed skill breakdown modal.
 
 #### 2. Tournament Snake Draft Arena (1-2-2-2-2-1)
 - Faithful implementation of official tournament pick/ban sequences (AOG, AIC, AWC).
-- Automatic turn tracking, dynamic first-pick selection (Blue or Red side), and strict duplicate exclusion.
+- Teams flank a central hero grid, so the board stays visible while picking. A seam traces the pick order.
+- Automatic turn tracking, first-pick selection (Blue or Red side), a 30-second turn timer you can switch off, and strict duplicate exclusion. Banned heroes stay visible, struck through.
+- The draft survives a page reload.
 - Lane-by-lane tactical slot assignments and lock-in validation.
 
-#### 3. Real-Time Team Synergy & Counter Matrix AI
-- Computes tactical team balance across damage types (Physical vs Magic vs True Damage), CC ratings, mobility coefficients, and power spikes.
+#### 3. Rule-Based Matchup Analysis
+- One verdict per lane beside the board, with details on demand. The analysis applies rules to the counter data; it is not an AI model.
+- Computes team balance across damage types, CC ratings, durability and mobility.
 - Direct counter warnings against high-priority meta threats (e.g. Tamyn, Florentino, Aoi, Hayate).
-- Synergy pairing suggestions and itemization counter-measures.
+- Synergy notes, counter items, and pick suggestions only for slots the rules allow.
 
 #### 4. Interactive Hero Compendium & 4-Skills Inspector
 - Comprehensive dataset of all 129 champions.
 - Interactive 4-skills viewer modeled after official Garena Academy portals:
-  - Circular skill buttons (Passive, Skill 1, Skill 2, Ultimate) with glowing selection rings.
-  - Smooth animation transitions between skill mechanisms, damage ratios, and scaling formulas.
+  - Circular skill buttons (Passive, Skill 1, Skill 2, Ultimate).
+  - Skill descriptions switch per button. Hero descriptions are available in Vietnamese only.
   - Mobility, CC, and power spike meters.
 
-#### 5. Ambient Visuals & BGM Audio Engine
-- Hardware-accelerated 60fps ambient kinetic particle canvas.
-- Specular card sheen sweep micro-interactions.
+#### 5. Language, Music & Accessibility
+- Switch the interface between Vietnamese and English from the header; the choice is remembered.
+- Full flows work by keyboard and on a 390px phone, and reduced-motion settings are honored.
 - Integrated background music player featuring the iconic orchestral AOV theme with interactive equalizer visualization and volume controls.
 - Web Audio API synthesis for click, roll, fanfare, and stop sound effects.
 
@@ -75,17 +79,24 @@ aov-metaforge/
 │   ├── audio/               # Local AOV theme soundtracks (.webm, .m4a)
 │   └── images/              # Official brand emblem and background artwork
 ├── css/
-│   └── style.css            # Bright glassmorphism styling, compact density, responsive rules
+│   ├── style.css            # Design tokens, app shell, shared controls
+│   ├── gacha.css            # Team roll screen
+│   ├── draft.css            # Draft board and analysis
+│   └── catalog.css          # Hero compendium and hero detail
 ├── js/
 │   ├── core/
 │   │   ├── data.js          # Complete 129 champions database with full skill sets & counters
-│   │   └── audio.js         # Web Audio synthesizer and BGM player controller
+│   │   ├── audio.js         # Web Audio synthesizer and BGM player controller
+│   │   ├── i18n.js          # Vietnamese and English interface strings
+│   │   └── ui.js            # Shared icons, portraits, tier medals
 │   ├── modules/
-│   │   ├── analyzer.js      # Team balance algorithms and counter detection matrix
+│   │   ├── analyzer.js      # Rule-based team balance and counter analysis
 │   │   ├── draft.js         # Tournament Snake Draft turn logic and slot managers
 │   │   └── gacha.js         # Multi-lane reel gacha engine and archive manager
 │   └── app.js               # Application coordinator, interactive modal and tab routing
 ├── index.html               # Semantic, accessible Single Page Application
+├── PRODUCT.md               # Product context
+├── DESIGN.md                # Design system
 ├── server.py                # Lightweight local development HTTP server
 ├── run_web.bat              # Windows 1-click launcher
 └── .gitignore               # Ignored temporary and system files
@@ -145,15 +156,15 @@ Arena of Valor (Liên Quân Mobile) and all associated assets, champion trademar
 
 > Nền tảng Phân Tích Cấm Chọn Giải Đấu, Mô Phỏng Snake Draft & Vòng Quay Gacha Đội Hình Chuẩn Meta Liên Quân Mobile.
 
-Nền tảng Web cao cấp dành cho game thủ, chuyên viên phân tích chiến thuật và ban huấn luyện **Liên Quân Mobile (Arena of Valor)**. Ứng dụng kết hợp mật độ hiển thị tinh gọn (Compact Density chuẩn Ant Design), hiệu ứng chuyển động GSAP mượt mà, hệ thống âm thanh BGM & SFX tích hợp, cùng cơ sở dữ liệu chi tiết của toàn bộ 129+ vị tướng.
+Nền tảng Web cao cấp dành cho game thủ, chuyên viên phân tích chiến thuật và ban huấn luyện **Liên Quân Mobile (Arena of Valor)**. Ứng dụng có giao diện men lam và vàng, bàn cấm chọn theo kiểu trong game, chuyển đổi Việt/Anh, cùng dữ liệu của toàn bộ 129 vị tướng.
 
 ### Mục Lục
 - [Các Phân Hệ Cốt Lõi](#các-phân-hệ-cốt-lõi)
   - [1. Vòng Quay Gacha Đội Hình & Nhân Phẩm](#1-vòng-quay-gacha-đội-hình--nhân-phẩm)
   - [2. Đấu Trường Cấm Chọn Snake Draft (1-2-2-2-2-1)](#2-đấu-trường-cấm-chọn-snake-draft-1-2-2-2-2-1)
-  - [3. AI Phân Tích Tương Quan & Ma Trận Khắc Chế](#3-ai-phân-tích-tương-quan--ma-trận-khắc-chế)
+  - [3. Phân Tích Kèo Theo Quy Tắc](#3-phân-tích-kèo-theo-quy-tắc)
   - [4. Bách Khoa Toàn Thư & Thanh Chọn 4 Kỹ Năng Tương Tác](#4-bách-khoa-toàn-thư--thanh-chọn-4-kỹ-năng-tương-tác)
-  - [5. Sân Khấu Chuyển Động & Âm Thanh eSports](#5-sân-khấu-chuyển-động--âm-thanh-esports)
+  - [5. Ngôn Ngữ, Âm Nhạc & Trợ Năng](#5-ngôn-ngữ-âm-nhạc--trợ-năng)
 - [Cấu Trúc Dự Án](#cấu-trúc-dự-án)
 - [Hướng Dẫn Sử Dụng](#hướng-dẫn-sử-dụng-1)
 - [Nguồn Dữ Liệu & Hướng Dẫn Cập Nhật](#nguồn-dữ-liệu--hướng-dẫn-cập-nhật)
@@ -166,29 +177,33 @@ Nền tảng Web cao cấp dành cho game thủ, chuyên viên phân tích chi�
 #### 1. Vòng Quay Gacha Đội Hình & Nhân Phẩm
 - Thuật toán phân bổ chuẩn xác theo từng đường thi đấu (Top, Rừng, Mid, AD, Trợ thủ).
 - Đa dạng chế độ: Đội hình 5v5 đầy đủ, Bộ 3 Mid-Rừng-SP, Cặp đôi đường Rồng AD-SP, Quay đơn 1 tướng, hoặc Tự chọn đường (Multi-lane).
-- Hiệu ứng cuộn dải slot gia tốc phần cứng kết hợp hiệu ứng nổ nảy (Landing Bounce) khi dừng quay.
+- Các ô quay dừng lần lượt trên chân dung tướng cỡ lớn, tướng S+ có hiệu ứng viền vàng, và dòng kết quả không làm xô lệch bố cục.
+- Chép đội hình dạng chữ hoặc chụp lại màn kết quả.
 - **Tương tác 1-Click**: Bấm vào bất kỳ ô tướng vừa quay xong hoặc chip tướng trong Lịch sử quay để mở ngay bảng phân tích chiêu thức.
 
 #### 2. Đấu Trường Cấm Chọn Snake Draft (1-2-2-2-2-1)
 - Tái hiện quy trình cấm chọn chuyên nghiệp theo chuẩn thi đấu quốc tế (AOG, AIC, AWC).
-- Tự động luân chuyển lượt chọn, hỗ trợ First Pick (Đội Xanh hoặc Đội Đỏ), loại trừ trùng lặp tướng.
+- Hai đội ở hai bên, lưới tướng ở giữa nên luôn thấy bàn khi chọn. Một mạch vàng thể hiện thứ tự chọn.
+- Tự động luân chuyển lượt, chọn đội đi trước, đồng hồ 30 giây mỗi lượt (tắt được), loại trừ trùng lặp tướng. Tướng bị cấm vẫn hiện và có gạch chéo.
+- Tải lại trang vẫn giữ nguyên draft.
 - Khóa vị trí chiến thuật và kiểm soát đội hình trực quan.
 
-#### 3. AI Phân Tích Tương Quan & Ma Trận Khắc Chế
-- Tự động đánh giá cán cân sức mạnh: Tỷ lệ sát thương (Vật Lý / Phép / Chuẩn), chỉ số cơ động, điểm số khống chế cứng (CC) và giai đoạn tỏa sáng (Power Spike).
+#### 3. Phân Tích Kèo Theo Quy Tắc
+- Mỗi đường một dòng kết luận ngay cạnh bàn, bấm để xem chi tiết. Phần phân tích áp dụng quy tắc lên dữ liệu khắc chế, không phải mô hình AI.
+- Đánh giá cán cân đội hình: tỷ lệ sát thương, khống chế, chống chịu và cơ động.
 - Cảnh báo trực diện các vị tướng khắc chế tâm điểm meta (Tamyn, Florentino, Aoi, Hayate, v.v.).
-- Đưa ra khuyến nghị phối hợp đồng đội (Synergy) và danh sách trang bị khắc chế tối ưu.
+- Gợi ý phối hợp, trang bị khắc chế và tướng nên chọn, chỉ cho những ô mà luật cho phép.
 
 #### 4. Bách Khoa Toàn Thư & Thanh Chọn 4 Kỹ Năng Tương Tác
 - Cơ sở dữ liệu chuẩn hóa của toàn bộ 129 vị tướng.
 - Khung xem kỹ năng tương tác theo chuẩn học viện Garena:
-  - Cụm 4 icon tròn kỹ năng (Nội tại, Chiêu 1, Chiêu 2, Chiêu 3/Chiêu cuối) với vòng sáng hoàng kim khi chọn.
-  - Chuyển đổi mượt mà mô tả chi tiết cơ chế, tỷ lệ sát thương, thời gian hồi chiêu.
+  - Cụm 4 icon tròn kỹ năng (Nội tại, Chiêu 1, Chiêu 2, Chiêu 3/Chiêu cuối).
+  - Bấm từng icon để xem mô tả chiêu. Mô tả tướng chỉ có tiếng Việt.
   - Thanh đo độ cơ động và khống chế trực quan.
 
-#### 5. Sân Khấu Chuyển Động & Âm Thanh eSports
-- Nền hạt sáng động học (Ambient Kinetic Particles) 60fps trên GPU Canvas.
-- Hiệu ứng quét sáng ánh kim (Sheen Sweep) khi rê chuột qua các thẻ bài.
+#### 5. Ngôn Ngữ, Âm Nhạc & Trợ Năng
+- Chuyển giao diện Việt/Anh ngay trên header, app nhớ lựa chọn của bạn.
+- Dùng trọn vẹn được bằng bàn phím và trên điện thoại 390px, tôn trọng cài đặt giảm chuyển động.
 - Trình phát nhạc nền AOV Theme chất lượng cao tích hợp bộ cân bằng sóng nhạc (Equalizer) và thanh trượt âm lượng.
 - Bộ tổng hợp âm thanh Web Audio API tái tạo âm click, roll tick, fanfare chiến thắng và card stop chân thực.
 
@@ -202,17 +217,24 @@ aov-metaforge/
 │   ├── audio/               # Bản nhạc nền AOV chính thức (.webm, .m4a)
 │   └── images/              # Logo nhận diện thương hiệu và hình ảnh portal
 ├── css/
-│   └── style.css            # Giao diện Bright Glassmorphism, mật độ compact, responsive
+│   ├── style.css            # Design token, khung app, control dùng chung
+│   ├── gacha.css            # Màn quay đội hình
+│   ├── draft.css            # Bàn cấm chọn và phân tích
+│   └── catalog.css          # Danh mục tướng và chi tiết tướng
 ├── js/
 │   ├── core/
 │   │   ├── data.js          # Dữ liệu 129 tướng, bộ chiêu thức đầy đủ và ma trận counter
-│   │   └── audio.js         # Bộ tổng hợp Web Audio API và điều khiển BGM
+│   │   ├── audio.js         # Bộ tổng hợp Web Audio API và điều khiển BGM
+│   │   ├── i18n.js          # Chuỗi giao diện tiếng Việt và tiếng Anh
+│   │   └── ui.js            # Icon, chân dung, huy hiệu tier dùng chung
 │   ├── modules/
-│   │   ├── analyzer.js      # Thuật toán AI phân tích tương quan và khắc chế
+│   │   ├── analyzer.js      # Phân tích cân bằng đội và khắc chế theo quy tắc
 │   │   ├── draft.js         # Logic Snake Draft giải đấu và quản lý lượt cấm chọn
 │   │   └── gacha.js         # Engine vòng quay reel gacha và lưu trữ lịch sử
 │   └── app.js               # Điều phối ứng dụng, modal kỹ năng và điều hướng tab
 ├── index.html               # Ứng dụng Single Page Application (SPA)
+├── PRODUCT.md               # Bối cảnh sản phẩm
+├── DESIGN.md                # Hệ thống thiết kế
 ├── server.py                # Máy chủ HTTP cục bộ tích hợp tự động mở trình duyệt
 ├── run_web.bat              # Phím tắt khởi chạy 1-click trên Windows
 └── .gitignore               # Cấu hình bỏ qua tệp hệ thống & bộ nhớ tạm
