@@ -7,6 +7,20 @@ class SoundController {
   constructor() {
     this.ctx = null;
     this.muted = false;
+    try {
+      this.muted = localStorage.getItem("aov_sfx_muted") === "1";
+    } catch {
+      /* Storage unavailable: keep the default */
+    }
+  }
+
+  setMuted(muted) {
+    this.muted = muted;
+    try {
+      localStorage.setItem("aov_sfx_muted", muted ? "1" : "0");
+    } catch {
+      /* Choice lasts for this visit only */
+    }
   }
 
   _init() {
@@ -289,9 +303,11 @@ class BGMController {
   updateUIState(playing) {
     if (this.btnToggle) {
       this.btnToggle.classList.toggle("is-on", playing);
+      this.btnToggle.setAttribute("aria-pressed", String(playing));
     }
     if (this.labelEl) {
-      this.labelEl.textContent = playing ? "Đang phát" : "Nhạc nền";
+      this.labelEl.dataset.i18n = playing ? "ctl.musicOn" : "ctl.music";
+      this.labelEl.textContent = t(this.labelEl.dataset.i18n);
     }
     if (this.eqVisualizer) {
       this.eqVisualizer.classList.toggle("active", playing);

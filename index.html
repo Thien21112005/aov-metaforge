@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AOV MetaForge - Hệ Thống Cấm Chọn Snake Draft & Gacha Đội Hình Liên Quân</title>
+  <title>AOV MetaForge: Cấm chọn &amp; quay đội hình Liên Quân</title>
   
   <!-- Google Fonts: Saira Condensed (names, numerals) & Be Vietnam Pro (reading); both cover Vietnamese -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,25 +31,41 @@
         <h1 class="brand-title">AOV METAFORGE</h1>
       </div>
 
-      <nav class="nav-tabs">
-        <button class="nav-tab active" data-target="tab-gacha">GACHA DRAFT</button>
-        <button class="nav-tab" data-target="tab-banpick">TOURNAMENT BAN/PICK</button>
-        <button class="nav-tab" data-target="tab-catalog">HERO COMPENDIUM (129)</button>
+      <nav class="nav-tabs" data-i18n-label="nav.label">
+        <button class="nav-tab active" data-target="tab-gacha" aria-current="page">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+          <span data-i18n="nav.gacha">Quay đội hình</span>
+        </button>
+        <button class="nav-tab" data-target="tab-banpick">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3l14 14M19 3L5 17M3 15l6 6M21 15l-6 6"/></svg>
+          <span data-i18n="nav.draft">Cấm chọn</span>
+        </button>
+        <button class="nav-tab" data-target="tab-catalog">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg>
+          <span data-i18n="nav.catalog">Tướng</span>
+        </button>
       </nav>
 
       <div class="header-actions">
+        <div class="lang-switch" role="group" data-i18n-label="ctl.lang">
+          <button class="lang-btn" data-lang="vi" lang="vi" aria-label="Tiếng Việt">VI</button>
+          <button class="lang-btn" data-lang="en" lang="en" aria-label="English">EN</button>
+        </div>
         <div class="bgm-player-widget" id="bgm-player-widget">
-          <button class="ctl-btn" id="btn-bgm-toggle" title="Phát/Tạm dừng nhạc nền">
-            <span class="bgm-eq" id="bgm-eq-visualizer">
+          <button class="ctl-btn" id="btn-bgm-toggle" aria-pressed="false">
+            <span class="bgm-eq" id="bgm-eq-visualizer" aria-hidden="true">
               <span class="eq-bar"></span>
               <span class="eq-bar"></span>
               <span class="eq-bar"></span>
             </span>
-            <span class="bgm-text" id="bgm-status-label">Nhạc nền</span>
+            <span class="ctl-label" id="bgm-status-label" data-i18n="ctl.music">Nhạc nền</span>
           </button>
-          <input type="range" id="bgm-volume-slider" class="bgm-slider" min="0" max="100" value="35" aria-label="Âm lượng nhạc nền" />
+          <input type="range" id="bgm-volume-slider" class="bgm-slider" min="0" max="100" value="35" data-i18n-label="ctl.volume" />
         </div>
-        <button class="ctl-btn is-on" id="btn-toggle-sound" title="Bật/Tắt hiệu ứng âm thanh">Âm thanh</button>
+        <button class="ctl-btn is-on" id="btn-toggle-sound" aria-pressed="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10z"/><path class="sound-wave" d="M16.5 9a4 4 0 0 1 0 6"/></svg>
+          <span class="ctl-label" data-i18n="ctl.sound">Âm thanh</span>
+        </button>
       </div>
     </header>
 
@@ -327,6 +343,8 @@
 
   <!-- SCRIPTS -->
   <script src="js/core/data.js?v=3.0"></script>
+  <script src="js/core/i18n.js?v=3.0"></script>
+  <script src="js/core/ui.js?v=3.0"></script>
   <script src="js/core/audio.js?v=3.0"></script>
   <script src="js/modules/analyzer.js?v=3.0"></script>
   <script src="js/modules/draft.js?v=3.0"></script>

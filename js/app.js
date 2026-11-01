@@ -3,6 +3,10 @@
  */
 
 document.addEventListener("DOMContentLoaded", () => {
+  // 0. Interface language
+  applyStaticI18n();
+  initLanguageSwitch();
+
   // 1. Initialize Core Managers
   window.gachaManager = new GachaManager();
   window.draftManager = new DraftManager();
@@ -15,10 +19,14 @@ document.addEventListener("DOMContentLoaded", () => {
   navTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       if (typeof sounds !== "undefined") sounds.playClick();
-      navTabs.forEach((t) => t.classList.remove("active"));
+      navTabs.forEach((other) => {
+        other.classList.remove("active");
+        other.removeAttribute("aria-current");
+      });
       tabPanels.forEach((p) => p.classList.remove("active"));
 
       tab.classList.add("active");
+      tab.setAttribute("aria-current", "page");
       const targetPanel = document.getElementById(tab.dataset.target);
       if (targetPanel) {
         targetPanel.classList.add("active");
@@ -37,9 +45,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 3. Sound Toggle Button
   const btnSound = document.getElementById("btn-toggle-sound");
   if (btnSound && typeof sounds !== "undefined") {
+    btnSound.classList.toggle("is-on", !sounds.muted);
+    btnSound.setAttribute("aria-pressed", String(!sounds.muted));
     btnSound.addEventListener("click", () => {
-      sounds.muted = !sounds.muted;
+      sounds.setMuted(!sounds.muted);
       btnSound.classList.toggle("is-on", !sounds.muted);
+      btnSound.setAttribute("aria-pressed", String(!sounds.muted));
     });
   }
 
@@ -52,6 +63,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // 6. Interactive Specular Button Ripples
   initButtonEffects();
 });
+
+function initLanguageSwitch() {
+  const buttons = document.querySelectorAll(".lang-btn");
+  const sync = () => {
+    buttons.forEach((btn) => {
+      const on = btn.dataset.lang === currentLang;
+      btn.classList.toggle("active", on);
+      btn.setAttribute("aria-pressed", String(on));
+    });
+  };
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (typeof sounds !== "undefined") sounds.playClick();
+      setLanguage(btn.dataset.lang);
+      sync();
+    });
+  });
+  sync();
+}
 
 function initHeroCatalog() {
   const container = document.getElementById("catalog-grid");
